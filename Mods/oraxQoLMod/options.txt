@@ -1,0 +1,71 @@
+--[[
+    KEYBINDINGS HELP
+    
+    Key table:         https://docs.ue4ss.com/lua-api/table-definitions/key.html
+    ModifierKey table: https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
+    
+    The Key table contains Microsoft virtual key-code strings.
+    examples:
+        ExampleKey = LEFT_MOUSE_BUTTON
+        ExampleKey = A
+        ExampleKey = NUM_ZERO
+    
+    The ModifierKey table contains Microsoft virtual key-code strings that are meant to be modifier keys such as CONTROL and ALT.
+    examples:
+        ExampleModifierKeys = {ModifierKey.CONTROL} -- CONTROL key
+        ExampleModifierKeys = {ModifierKey.SHIFT}   -- SHIFT key
+        ExampleModifierKeys = {ModifierKey.CONTROL, ModifierKey.SHIFT, ModifierKey.ALT} -- CONTROL + SHIFT + ALT keys
+]]
+
+-- Movement
+-- -1 is a special value, it means you will allways sprint, your walking speed will be the same as your sprinting speed.
+PlayerWalkSpeed = -1 -- default: 350.0 | -1: MaxWalkSpeed = MaxSprintSpeed
+PlayerSwimSpeed = -1 -- default: 330.0 | -1: MaxSwimSpeed = MaxSprintSwimSpeed
+
+-- Zipline -- https://grounded.fandom.com/wiki/Zipline_Anchor
+-- /!\ You might need the "ZIP.R" if it doesn't work.
+--ZiplineIgnoreCollisionDistance = 250 -- default: 250.0
+--ZiplineMaxSpeedMultiplier = 2.5 -- default: 2.5
+ZiplineExitVelocityMultiplier = 0 -- default: 0.5
+ZiplineAscendAccel = 6000 -- default: 600.0
+ZiplineMaxAscendSpeed = 10000 -- default: 1000.0
+-- KEYBINDINGS
+-- keybindings for enable modified values or restore game defaults
+ToggleZiplineModKey = Key.HOME -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
+ToggleZiplineModModifierKeys = {ModifierKey.SHIFT} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
+
+-- Effect "+Trickle Regen" with "Fiber Bandage" - https://grounded.fandom.com/wiki/Status_Effects#Trickle_Regen
+SmallHoTEffect_TimeElapsed = -82800 -- default: 160.0 (in seconds), 82800 seconds = 23 hours
+
+-- Infinite item power (for torch) - https://grounded.fandom.com/wiki/Category:Tools/Light
+InfiniteItemPower = true
+
+-- Proximity inventory storage radius
+StorageRadius = 20000 -- default: 2000.0
+-- TypeRestrictedStorageRadius = 4000 -- default: 4000.0
+
+-- Handy Gnat
+HandyGnatMaxFlySpeed = 4800 -- default: 1200.0
+HandyGnatMaxAcceleration = 8192 -- default: 2048.0
+HandyGnatBrakingFrictionFactor = 40 -- default: 2.0
+--HandyGnatBrakingFriction = 0 -- default: 0.0
+--HandyGnatBrakingSubStepTime = 0.03 -- default: 0.030303031206131
+--HandyGnatBrakingDecelerationFlying = 1000 -- default: 1000.0
+
+-- Player interactions timer max
+InteractTimerMax = 0.3 -- (SUPER BUILD, ...) default: 0.6
+--Alt.InteractTimerMax = 0 -- alternative value (useful if you use the keybinding below)
+-- DropInteractTimerMax = 0.3 -- default: 0.6
+-- Alt.DropInteractTimerMax = 0
+CancelInteractTimerMax = 0.3 -- (RECYCLE, ...) default: 1.0
+--Alt.CancelInteractTimerMax = 0
+-- KEYBINDINGS
+-- keybindings for enable modified values or restore game defaults
+ToggleInteractTimerModKey = Key.END -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
+ToggleInteractTimerModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
+
+-- Cancel under construction buildings
+-- Same function you have in game Menu > Game Repair > Cancel Nearby Blueprints, but for the whole world (not only nearby).
+-- KEYBINDINGS
+CancelUnderConstructionBuildingsKey = Key.DEL -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
+CancelUnderConstructionBuildingsModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
