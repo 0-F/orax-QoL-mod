@@ -1,0 +1,19 @@
+; You can delete this file if there is an "enabled.txt" file in the mod directory.
+
+CheatManagerEnablerMod : 0
+ActorDumperMod : 0
+ConsoleCommandsMod : 0
+ConsoleEnablerMod : 0
+SplitScreenMod : 0
+LineTraceMod : 0
+BPModLoaderMod : 0
+
+oraxQoLMod : 1
+
+; Uncomment these lines if you use these mods (remove the ";")
+;QoLMod : 1
+;RemoteStorageMod : 1
+
+
+; Built-in keybinds, do not move up!
+;Keybinds : 0

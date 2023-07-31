@@ -7,30 +7,28 @@ print(modName .. " init\n")
 -- These values can be set in "options.txt".
 Alt = {}
 
-IsInteractTimerModEnabled = true
-IsZiplineModEnabled = true
+IsInteractTimerModEnabled = false
+IsZiplineModEnabled = false
+IsBuildAnywhereEnabled = false
 
-PlayerWalkSpeed = nil
-PlayerSwimSpeed = nil
-
-ZiplineIgnoreCollisionDistance = nil
-ZiplineMaxSpeedMultiplier = nil
-ZiplineExitVelocityMultiplier = nil
-ZiplineAscendAccel = nil
-ZiplineMaxAscendSpeed = nil
-
-SmallHoTEffect_TimeElapsed = nil
-
-InfiniteItemPower = nil
-
-StorageRadius = nil
-TypeRestrictedStorageRadius = nil
-
-CancelUnderConstructionBuildingsKey = nil
-CancelUnderConstructionBuildingsModifierKey = nil
+-- hook variables
+PreIdBuildAnywhere = 0
+PostIdBuildAnywhere = 0
 
 -- Enum /Script/Maine.EBuildingState
 EBuildingState = { 
+  None = 0,
+  Built = 1,
+  BeingPlaced = 2,
+  BeingPlacedInvalid = 3,
+  UnderConstruction = 4,
+  Cancelled = 5,
+  Destroyed = 6,
+  CollapseDestroy = 7
+}
+
+-- Enum /Script/Maine.EBuildingState
+EBuildingState = {
   None = 0,
   Built = 1,
   BeingPlaced = 2,
@@ -46,26 +44,26 @@ dofile([[Mods\oraxQoLMod\options.txt]])
 local LocalPlayerCharacter = nil
 
 function SetupInteractTimerMod()
-  if IsInteractTimerModEnabled == true then
-    if InteractTimerMax ~= nil then LocalPlayerCharacter.InteractTimerMax = InteractTimerMax end
-    if DropInteractTimerMax ~= nil then LocalPlayerCharacter.DropInteractTimerMax = DropInteractTimerMax end
-    if CancelInteractTimerMax ~= nil then LocalPlayerCharacter.CancelInteractTimerMax = CancelInteractTimerMax end 
-  end
+  if InteractTimerMax ~= nil then LocalPlayerCharacter.InteractTimerMax = InteractTimerMax end
+  if DropInteractTimerMax ~= nil then LocalPlayerCharacter.DropInteractTimerMax = DropInteractTimerMax end
+  if CancelInteractTimerMax ~= nil then LocalPlayerCharacter.CancelInteractTimerMax = CancelInteractTimerMax end 
 end
 
 local function ToggleInteractTimerMod()
-  IsInteractTimerModEnabled = not IsInteractTimerModEnabled
-
-  if IsInteractTimerModEnabled == true then
-    ShowMessage("InteractTimerMod: init")
-    SetupInteractTimerMod()
-  else
+  if IsInteractTimerModEnabled then
     -- restore default game values if alternative values is not set in options.txt
-    ShowMessage("InteractTimerMod: restore default or alternative values")
     LocalPlayerCharacter.InteractTimerMax = Alt.InteractTimerMax
     LocalPlayerCharacter.DropInteractTimerMax = Alt.DropInteractTimerMax
     LocalPlayerCharacter.CancelInteractTimerMax = Alt.CancelInteractTimerMax
+  else
+    SetupInteractTimerMod()
   end
+
+  ShowMessage("InteractTimerMax = " .. LocalPlayerCharacter.InteractTimerMax)
+  ShowMessage("DropInteractTimerMax = " .. LocalPlayerCharacter.DropInteractTimerMax)
+  ShowMessage("CancelInteractTimerMax = " .. LocalPlayerCharacter.CancelInteractTimerMax)
+
+  IsInteractTimerModEnabled = not IsInteractTimerModEnabled
 end
 
 local function SetupZiplineMod()
@@ -89,14 +87,9 @@ local function SetupZiplineMod()
 end
 
 local function ToggleZiplineMod()
-  IsZiplineModEnabled = not IsZiplineModEnabled
-
   local moveComp = LocalPlayerCharacter.CharMovementComponent
 
-  if IsZiplineModEnabled == true then
-    ShowMessage("ZiplineMod: init", cache.icon_Zipline)
-    SetupZiplineMod()
-  else
+  if IsZiplineModEnabled then
     -- restore default game values if alternative values is not set in options.txt
     ShowMessage("ZiplineMod: restore default or alternative values", cache.icon_Zipline)
     moveComp.ZiplineIgnoreCollisionDistance = Alt.ZiplineIgnoreCollisionDistance
@@ -104,7 +97,18 @@ local function ToggleZiplineMod()
     moveComp.ZiplineExitVelocityMultiplier = Alt.ZiplineExitVelocityMultiplier
     moveComp.ZiplineAscendAccel = Alt.ZiplineAscendAccel
     moveComp.ZiplineMaxAscendSpeed = Alt.ZiplineMaxAscendSpeed
+  else
+    ShowMessage("ZiplineMod: enable", cache.icon_Zipline)
+    SetupZiplineMod()
   end
+
+  ShowMessage("IgnoreCollisionDistance = " .. moveComp.ZiplineIgnoreCollisionDistance, cache.icon_Zipline)
+  ShowMessage("MaxSpeedMultiplier = " .. moveComp.ZiplineMaxSpeedMultiplier, cache.icon_Zipline)
+  ShowMessage("ExitVelocityMultiplier = " .. moveComp.ZiplineExitVelocityMultiplier, cache.icon_Zipline)
+  ShowMessage("AscendAccel = " .. moveComp.ZiplineAscendAccel, cache.icon_Zipline)
+  ShowMessage("MaxAscendSpeed =" .. moveComp.ZiplineMaxAscendSpeed, cache.icon_Zipline)
+
+  IsZiplineModEnabled = not IsZiplineModEnabled
 end
 
 -- cancel under construction buildings
@@ -142,6 +146,34 @@ local function UpdatePlayer(player)
   LocalPlayerCharacter = player
   local moveComp = player.CharMovementComponent
 
+  -- get default game values if alternative values are not set in options.txt
+  --
+  -- "Zipline"
+  if Alt.ZiplineIgnoreCollisionDistance == nil then
+    Alt.ZiplineIgnoreCollisionDistance = moveComp.ZiplineIgnoreCollisionDistance
+  end
+  if Alt.ZiplineMaxSpeedMultiplier == nil then  
+    Alt.ZiplineMaxSpeedMultiplier = moveComp.ZiplineMaxSpeedMultiplier
+  end
+  if Alt.ZiplineExitVelocityMultiplier == nil then  
+    Alt.ZiplineExitVelocityMultiplier = moveComp.ZiplineExitVelocityMultiplier
+  end
+  if Alt.ZiplineAscendAccel == nil then  
+    Alt.ZiplineAscendAccel = moveComp.ZiplineAscendAccel
+  end
+  if Alt.ZiplineMaxAscendSpeed == nil then  
+    Alt.ZiplineMaxAscendSpeed = moveComp.ZiplineMaxAscendSpeed
+  end
+  --
+  -- "Interactions"
+  if Alt.InteractTimerMax == nil then Alt.InteractTimerMax = player.InteractTimerMax end
+  if Alt.DropInteractTimerMax == nil then Alt.DropInteractTimerMax = player.DropInteractTimerMax end
+  if Alt.CancelInteractTimerMax == nil then Alt.CancelInteractTimerMax = player.CancelInteractTimerMax end
+
+  --
+  -- set custom values
+  --
+
   -- "Proximity inventory storage radius"
   if StorageRadius ~= nil then
     player.ProximityInventoryComponent.StorageRadius = StorageRadius
@@ -172,32 +204,19 @@ local function UpdatePlayer(player)
     end
   end
 
-  -- get default game values if alternative values is not set in options.txt
-  --
-  -- "Zipline"
-  if Alt.ZiplineIgnoreCollisionDistance == nil then
-    Alt.ZiplineIgnoreCollisionDistance = moveComp.ZiplineIgnoreCollisionDistance
+  -- "Interactions"
+  if InteractTraceLength ~= nil then
+    player.InteractTraceLength = InteractTraceLength
   end
-  if Alt.ZiplineMaxSpeedMultiplier == nil then  
-    Alt.ZiplineMaxSpeedMultiplier = moveComp.ZiplineMaxSpeedMultiplier
+  if BuildModeInteractionRangeMultiplier ~= nil then
+    player.BuildModeInteractionRangeMultiplier = BuildModeInteractionRangeMultiplier
   end
-  if Alt.ZiplineExitVelocityMultiplier == nil then  
-    Alt.ZiplineExitVelocityMultiplier = moveComp.ZiplineExitVelocityMultiplier
-  end
-  if Alt.ZiplineAscendAccel == nil then  
-    Alt.ZiplineAscendAccel = moveComp.ZiplineAscendAccel
-  end
-  if Alt.ZiplineMaxAscendSpeed == nil then  
-    Alt.ZiplineMaxAscendSpeed = moveComp.ZiplineMaxAscendSpeed
-  end
-  --
-  -- "Interact timer"
-  if Alt.InteractTimerMax == nil then Alt.InteractTimerMax = player.InteractTimerMax end
-  if Alt.DropInteractTimerMax == nil then Alt.DropInteractTimerMax = player.DropInteractTimerMax end
-  if Alt.CancelInteractTimerMax == nil then Alt.CancelInteractTimerMax = player.CancelInteractTimerMax end
-
-  SetupZiplineMod()
   SetupInteractTimerMod()
+  IsInteractTimerModEnabled = true
+
+  -- "Zipline"
+  SetupZiplineMod()
+  IsZiplineModEnabled = true
 end
 
 NotifyOnNewObject("/Script/Maine.SurvivalPlayerCharacter", function(player)
@@ -230,7 +249,7 @@ if SmallHoTEffect_TimeElapsed ~= nil then
   end)
 end
 
--- infinite power (for torch) - https://grounded.fandom.com/wiki/Category:Tools/Light
+-- Infinite power (for torch) - https://grounded.fandom.com/wiki/Category:Tools/Light
 if InfiniteItemPower == true then
   RegisterHook("/Script/Maine.Item:GetIsPowerOn", function(self)
     local item = self:get()
@@ -244,8 +263,30 @@ if InfiniteItemPower == true then
   end)
 end
 
+-- Build anywhere
+if ToggleBuildAnywhereModKey ~= nil then
+  RegisterHook("/Script/Maine.Building:UpdateCollisionStateChange", function(self)
+    if not IsBuildAnywhereEnabled then return end
+
+    local building = self:get()
+    if building.BuildingState == EBuildingState.BeingPlacedInvalid then
+      building.BuildingState = EBuildingState.BeingPlaced
+    end
+  end)
+end
+
+function ToggleBuildAnywhereMod()  
+  if IsBuildAnywhereEnabled then
+    ShowMessage("Disable BuildAnywhere")
+  else
+    ShowMessage("Enable BuildAnywhere")
+  end
+
+  IsBuildAnywhereEnabled = not IsBuildAnywhereEnabled
+end
+
 --
--- keybinds
+-- Keybinds
 --
 
 if ToggleZiplineModKey ~= nil then
@@ -269,5 +310,13 @@ if CancelUnderConstructionBuildingsKey ~= nil then
     RegisterKeyBind(CancelUnderConstructionBuildingsKey, CancelUnderConstructionBuildingsModifierKeys, CancelUnderConstructionBuildings)
   else
     RegisterKeyBind(CancelUnderConstructionBuildingsKey, CancelUnderConstructionBuildings)
+  end
+end
+
+if ToggleBuildAnywhereModKey ~= nil then
+  if ToggleBuildAnywhereModModifierKeys ~= nil then
+    RegisterKeyBind(ToggleBuildAnywhereModKey, ToggleBuildAnywhereModModifierKeys, ToggleBuildAnywhereMod)
+  else
+    RegisterKeyBind(ToggleBuildAnywhereModKey, ToggleBuildAnywhere)
   end
 end
