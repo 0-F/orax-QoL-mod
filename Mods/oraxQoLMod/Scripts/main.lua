@@ -111,30 +111,30 @@ local function ToggleZiplineMod()
   IsZiplineModEnabled = not IsZiplineModEnabled
 end
 
--- cancel under construction buildings
+-- cancel nearby blueprints (under construction buildings)
 -- Same function you have in game Menu > Game Repair > Cancel Nearby Blueprints,
--- but for the whole world (not only nearby).
-local function CancelUnderConstructionBuildings()
-  ShowMessage("Cancel 'under construction' buildings", cache.icon_CancelBuild)
+-- but with a custom range.
+local function CancelNearbyBlueprints()
+  local gameStatics = cache.gameStatics
 
-  local buildingInstances = FindAllOf("Building")
-  local buildingClass = StaticFindObject("/Script/Maine.Building")
-
-  if not buildingInstances then
-      print("No instances of 'Building' were found\n")
-      ShowMessage("No buildings were found", cache.icon_CancelBuild)
-  else
-    for index, building in pairs(buildingInstances) do
-      if building:IsA(buildingClass) and building.BuildingState == EBuildingState.UnderConstruction then
-        local name = building:GetName():ToString()
-
-        print(string.format("%s: [%d] Cancel (%s) %s\n", ModName, index, name, building:GetFullName()))
-        ShowMessage(name, cache.icon_CancelBuild)
-
-        building:CancelBuild(LocalPlayerCharacter)
-      end
-    end
+  if not CancelNearbyBlueprintsRange then
+    ShowMessage("You need to set a range", cache.icon_CancelBuild)
+    return
   end
+
+  local count = gameStatics:GetCancelNearbyBlueprintsCount(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
+  print(tostring(count))
+  if count == 0 then
+    ShowMessage("No nearby blueprints were found", cache.icon_CancelBuild)
+    return
+  end
+
+  local text = "Cancel %s nearby blueprint"
+  if count > 1 then
+    text = text .. "s" -- plural
+  end
+  ShowMessage(string.format(text, count), cache.icon_CancelBuild)
+  gameStatics:CancelNearbyBlueprints(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
 end
 
 local function UpdatePlayer(player)
@@ -323,11 +323,11 @@ if ToggleInteractTimerModKey ~= nil then
   end
 end
 
-if CancelUnderConstructionBuildingsKey ~= nil then
-  if CancelUnderConstructionBuildingsModifierKeys ~= nil then
-    RegisterKeyBind(CancelUnderConstructionBuildingsKey, CancelUnderConstructionBuildingsModifierKeys, CancelUnderConstructionBuildings)
+if CancelNearbyBlueprintsKey ~= nil then
+  if CancelNearbyBlueprintsModifierKeys ~= nil then
+    RegisterKeyBind(CancelNearbyBlueprintsKey, CancelNearbyBlueprintsModifierKeys, CancelNearbyBlueprints)
   else
-    RegisterKeyBind(CancelUnderConstructionBuildingsKey, CancelUnderConstructionBuildings)
+    RegisterKeyBind(CancelNearbyBlueprintsKey, CancelNearbyBlueprints)
   end
 end
 

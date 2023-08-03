@@ -29,8 +29,7 @@ PlayerSwimSpeed = -1 -- default: 330.0 | -1: MaxSwimSpeed = MaxSprintSwimSpeed
 ZiplineExitVelocityMultiplier = 0 -- default: 0.5
 ZiplineAscendAccel = 6000 -- default: 600.0
 ZiplineMaxAscendSpeed = 10000 -- default: 1000.0
--- KEYBINDINGS
--- keybindings for enable modified values or restore game defaults
+-- Zipline -- KEYBINDINGS
 ToggleZiplineModKey = Key.HOME -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 ToggleZiplineModModifierKeys = {ModifierKey.SHIFT} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
@@ -61,22 +60,21 @@ CancelInteractTimerMax = 0.3 -- (RECYCLE, ...) default: 1.0
 Alt.CancelInteractTimerMax = 0 -- alternative value
 InteractTraceLength = 600 -- default: 300.0 | distance at which you can interact
 BuildModeInteractionRangeMultiplier = 10 -- default: 4.0 | multiplier for the distance at which you can build
-
--- KEYBINDINGS
-
--- keybindings for enable modified values or restore game defaults
+-- Player interactions (KEYBINDINGS)
 ToggleInteractTimerModKey = Key.END -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 ToggleInteractTimerModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
--- Cancel under construction buildings
--- Same function you have in game Menu > Game Repair > Cancel Nearby Blueprints, but for the whole world (not only nearby).
-CancelUnderConstructionBuildingsKey = Key.DEL -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
-CancelUnderConstructionBuildingsModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
+-- Cancel nearby blueprints (under construction buildings)
+-- Its the same function you have in game Menu > Game Repair > Cancel Nearby Blueprints, but with a custom range.
+CancelNearbyBlueprintsRange = 90000
+-- Cancel nearby blueprints (KEYBINDINGS)
+CancelNearbyBlueprintsKey = Key.DEL -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
+CancelNearbyBlueprintsModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
--- Build anywhere
+-- Build anywhere (KEYBINDINGS)
 ToggleBuildAnywhereModKey = Key.NUM_FIVE -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 ToggleBuildAnywhereModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
--- Pause/unpause the game
+-- Pause/unpause the game (KEYBINDINGS)
 ToggleGamePausedKey = Key.PAUSE -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 --ToggleGamePausedModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html

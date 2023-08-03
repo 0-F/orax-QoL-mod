@@ -19,6 +19,17 @@ function ShowMessage(message, icon)
   end
 end
 
+function PostPlayerChatMessage(message)
+  local engine = cache.engine
+  local uiStatics = cache.uiStatics
+  local gameStatics = cache.gameStatics
+  if uiStatics and gameStatics then
+    local ui = uiStatics:GetGameUI(engine.GameViewport)
+    local state = gameStatics:GetLocalSurvivalPlayerState(engine.GameViewport)
+    ui:PostPlayerChatMessage(message, state)
+  end
+end
+
 cache = {}
 cache.objects = {}
 cache.names = {
@@ -51,14 +62,3 @@ cache.mt.__index = function (obj, key)
 end
 
 setmetatable(cache, cache.mt)
-
-local function PostPlayerChatMessage(message)
-  local engine = cache.engine
-  local uiStatics = cache.uiStatics
-  local gameStatics = cache.gameStatics
-  if uiStatics and gameStatics then
-    local ui = uiStatics:GetGameUI(engine.GameViewport)
-    local state = gameStatics:GetLocalSurvivalPlayerState(engine.GameViewport)
-    ui:PostPlayerChatMessage(message, state)
-  end
-end
