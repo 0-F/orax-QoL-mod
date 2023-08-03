@@ -76,3 +76,7 @@ CancelUnderConstructionBuildingsModifierKeys = {ModifierKey.CONTROL} -- https://
 -- Build anywhere
 ToggleBuildAnywhereModKey = Key.NUM_FIVE -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 ToggleBuildAnywhereModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
+
+-- Pause/unpause the game
+ToggleGamePausedKey = Key.PAUSE -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
+--ToggleGamePausedModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html

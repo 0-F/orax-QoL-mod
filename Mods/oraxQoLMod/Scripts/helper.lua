@@ -27,6 +27,7 @@ cache.names = {
   ["gameStatics"] = {"/Script/Maine.Default__SurvivalGameplayStatics", true},
   ["kismet"] = {"/Script/Engine.Default__KismetSystemLibrary", true},
   ["icon_Build"] = {"/Game/UI/Images/T_UI_Build.T_UI_Build", true},
+  ["icon_Sleep"] = {"/Game/UI/Images/FlagIcons/T_UI_Flag_Sleep.T_UI_Flag_Sleep", true}, 
   ["icon_Zipline"] = {"/Game/Blueprints/Items/Icons/ICO_BLDG_Zipline_Anchor.ICO_BLDG_Zipline_Anchor", true},
   ["icon_CancelBuild"] = {"/Game/UI/Images/ActionIcons/T_UI_CancelBuild.T_UI_CancelBuild", true}
 }

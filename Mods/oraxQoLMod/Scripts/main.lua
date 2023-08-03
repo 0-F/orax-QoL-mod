@@ -285,6 +285,24 @@ function ToggleBuildAnywhereMod()
   IsBuildAnywhereEnabled = not IsBuildAnywhereEnabled
 end
 
+-- Pause/unpause the game
+function ToggleGamePaused()
+  local pause
+  local gameplayStatics = cache.gameplayStatics
+
+  if gameplayStatics:IsGamePaused(LocalPlayerCharacter) then
+    pause = false
+    ShowMessage("Game unpaused", cache.icon_Sleep)
+  else
+    pause = true
+    ShowMessage("Game paused", cache.icon_Sleep)
+  end
+
+  gameplayStatics:SetGamePaused(LocalPlayerCharacter, pause)
+
+  return pause
+end
+
 --
 -- Keybinds
 --
@@ -318,5 +336,13 @@ if ToggleBuildAnywhereModKey ~= nil then
     RegisterKeyBind(ToggleBuildAnywhereModKey, ToggleBuildAnywhereModModifierKeys, ToggleBuildAnywhereMod)
   else
     RegisterKeyBind(ToggleBuildAnywhereModKey, ToggleBuildAnywhere)
+  end
+end
+
+if ToggleGamePausedKey ~= nil then
+  if ToggleGamePausedModifierKeys ~= nil then
+        RegisterKeyBind(ToggleGamePausedKey, ToggleGamePausedModifierKeys, ToggleGamePaused)
+  else
+    RegisterKeyBind(ToggleGamePausedKey, ToggleGamePaused)
   end
 end
