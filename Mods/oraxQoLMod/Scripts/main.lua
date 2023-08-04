@@ -115,14 +115,14 @@ end
 -- Same function you have in game Menu > Game Repair > Cancel Nearby Blueprints,
 -- but with a custom range.
 local function CancelNearbyBlueprints()
-  local gameStatics = cache.gameStatics
+  local survivalGameplayStatics = cache.survivalGameplayStatics
 
   if not CancelNearbyBlueprintsRange then
     ShowMessage("You need to set a range", cache.icon_CancelBuild)
     return
   end
 
-  local count = gameStatics:GetCancelNearbyBlueprintsCount(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
+  local count = survivalGameplayStatics:GetCancelNearbyBlueprintsCount(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
   print(tostring(count))
   if count == 0 then
     ShowMessage("No nearby blueprints were found", cache.icon_CancelBuild)
@@ -134,7 +134,7 @@ local function CancelNearbyBlueprints()
     text = text .. "s" -- plural
   end
   ShowMessage(string.format(text, count), cache.icon_CancelBuild)
-  gameStatics:CancelNearbyBlueprints(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
+  survivalGameplayStatics:CancelNearbyBlueprints(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
 end
 
 local function UpdatePlayer(player)
@@ -341,7 +341,7 @@ end
 
 if ToggleGamePausedKey ~= nil then
   if ToggleGamePausedModifierKeys ~= nil then
-        RegisterKeyBind(ToggleGamePausedKey, ToggleGamePausedModifierKeys, ToggleGamePaused)
+    RegisterKeyBind(ToggleGamePausedKey, ToggleGamePausedModifierKeys, ToggleGamePaused)
   else
     RegisterKeyBind(ToggleGamePausedKey, ToggleGamePaused)
   end

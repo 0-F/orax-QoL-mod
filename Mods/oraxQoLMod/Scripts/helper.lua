@@ -22,10 +22,10 @@ end
 function PostPlayerChatMessage(message)
   local engine = cache.engine
   local uiStatics = cache.uiStatics
-  local gameStatics = cache.gameStatics
-  if uiStatics and gameStatics then
+  local survivalGameplayStatics = cache.survivalGameplayStatics
+  if uiStatics and survivalGameplayStatics then
     local ui = uiStatics:GetGameUI(engine.GameViewport)
-    local state = gameStatics:GetLocalSurvivalPlayerState(engine.GameViewport)
+    local state = survivalGameplayStatics:GetLocalSurvivalPlayerState(engine.GameViewport)
     ui:PostPlayerChatMessage(message, state)
   end
 end
@@ -35,7 +35,8 @@ cache.objects = {}
 cache.names = {
   ["engine"] = {"Engine", false},
   ["uiStatics"] = {"/Script/Maine.Default__UserInterfaceStatics", true},
-  ["gameStatics"] = {"/Script/Maine.Default__SurvivalGameplayStatics", true},
+  ["survivalGameplayStatics"] = {"/Script/Maine.Default__SurvivalGameplayStatics", true},
+  ["gameplayStatics"] = {"/Script/Engine.Default__GameplayStatics", true},
   ["kismet"] = {"/Script/Engine.Default__KismetSystemLibrary", true},
   ["icon_Build"] = {"/Game/UI/Images/T_UI_Build.T_UI_Build", true},
   ["icon_Sleep"] = {"/Game/UI/Images/FlagIcons/T_UI_Flag_Sleep.T_UI_Flag_Sleep", true}, 
