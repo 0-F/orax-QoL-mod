@@ -64,6 +64,9 @@ BuildModeInteractionRangeMultiplier = 10 -- default: 4.0 | multiplier for the di
 ToggleInteractTimerModKey = Key.END -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 ToggleInteractTimerModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
+-- Production
+MaxProductionItems = 50 -- default: 5 (total capacity)
+
 -- Cancel nearby blueprints (under construction buildings)
 -- Its the same function you have in game Menu > Game Repair > Cancel Nearby Blueprints, but with a custom range.
 CancelNearbyBlueprintsRange = 90000

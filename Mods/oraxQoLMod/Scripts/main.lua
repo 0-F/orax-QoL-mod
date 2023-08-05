@@ -263,6 +263,13 @@ if InfiniteItemPower == true then
   end)
 end
 
+-- Production
+if MaxProductionItems ~= nil then
+  NotifyOnNewObject("/Script/Maine.ProductionBuilding", function(building)
+    building.MaxProductionItems = MaxProductionItems
+  end)
+end
+
 -- Build anywhere
 if ToggleBuildAnywhereModKey ~= nil then
   RegisterHook("/Script/Maine.Building:UpdateCollisionStateChange", function(self)
