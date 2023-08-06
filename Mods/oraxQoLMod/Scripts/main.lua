@@ -24,19 +24,17 @@ EBuildingState = {
   UnderConstruction = 4,
   Cancelled = 5,
   Destroyed = 6,
-  CollapseDestroy = 7
+  CollapseDestroy = 7,
+  EBuildingState_MAX = 8
 }
 
--- Enum /Script/Maine.EBuildingState
-EBuildingState = {
+-- Enum /Script/Maine.EBuildingGridSurfaceType
+EBuildingGridSurfaceType = {
   None = 0,
-  Built = 1,
-  BeingPlaced = 2,
-  BeingPlacedInvalid = 3,
-  UnderConstruction = 4,
-  Cancelled = 5,
-  Destroyed = 6,
-  CollapseDestroy = 7
+  Invalid = 1,
+  Water = 4,
+  Default = 7,
+  EBuildingGridSurfaceType_MAX = 8
 }
 
 dofile([[Mods\oraxQoLMod\options.txt]])
@@ -276,6 +274,11 @@ if ToggleBuildAnywhereModKey ~= nil then
     if not IsBuildAnywhereEnabled then return end
 
     local building = self:get()
+
+    if building.AnchoredSurface == EBuildingGridSurfaceType.None or building.AnchoredSurface == EBuildingGridSurfaceType.Invalid then
+      building.AnchoredSurface = EBuildingGridSurfaceType.Default
+    end
+
     if building.BuildingState == EBuildingState.BeingPlacedInvalid then
       building.BuildingState = EBuildingState.BeingPlaced
     end
