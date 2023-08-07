@@ -11,7 +11,6 @@ BPModLoaderMod : 0
 oraxQoLMod : 1
 
 ; Uncomment these lines if you use these mods (remove the ";")
-;QoLMod : 1
 ;RemoteStorageMod : 1
 
 

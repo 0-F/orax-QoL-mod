@@ -81,3 +81,38 @@ ToggleBuildAnywhereModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss
 -- Pause/unpause the game (KEYBINDINGS)
 ToggleGamePausedKey = Key.PAUSE -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 --ToggleGamePausedModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
+
+--------------------------------------------------------------------------------
+-- Options from "Configurable QoL mod" https://www.nexusmods.com/grounded/mods/82
+
+HaulingCapacity = 20             -- default: 5
+AttackDurability = 0.1           -- default: 1
+BlockDurability = 0.1            -- default: 1
+ThrowDurability = 1              -- default: 1
+MaxActiveMutations = 15          -- default: 2
+--PlayerDamageMultiplier = 1     -- default: 1
+--EnemyDamageMultiplier = 1      -- default: 1
+GameToRealTimeRatio = 10         -- default: 30
+PerfectBlockWindow = 0.5         -- default: 0.25
+DewCollectorAmountPerHour = 15   -- default: 5
+PlankStorageCapacity = 40        -- default: 24
+LogStorageCapacity = 40          -- default: 21
+DropAmountMultiplier = 2         -- no default
+DropChanceMin = 0.5              -- default: varies (valid values 0 (0%) - 1 (100%))
+DeconstructPercentage = 1        -- default: 0.5 (valid values 0 (0%) - 1 (100%))
+SmallStorageCapacity = 40        -- default: 20
+BigStorageCapacity = 80          -- default: 40
+FridgeStorageCapacity = 40       -- default: 20
+ProductionSpeedMultiplier = 5    -- default: varies (cannot be 0)
+ProductionItems = 5              -- default: varies (valid values 1-5)
+PlayerSprintSpeedMultiplier = 2  -- default: 1
+PlayerSwimSpeedMultiplier = 2    -- default: 1
+DisableFOG = false               -- default: false
+DayLengthMultiplier = 3          -- default: 1
+NightLengthMultiplier = -3       -- default: 1
+AOEPickupRadius = 1000                      -- no default
+AOEPickupKey = Key.NUM_FOUR                 -- all variants here: https://github.com/UE4SS/UE4SS/wiki/Table-Key
+AOEPickupModifierKey = ModifierKey.ALT      -- all variants here: https://github.com/UE4SS/UE4SS/wiki/Table-ModifierKey
+AOEPickupModeKey = Key.NUM_SIX              -- all variants here: https://github.com/UE4SS/UE4SS/wiki/Table-Key
+AOEPickupModeModifierKey = ModifierKey.ALT  -- all variants here: https://github.com/UE4SS/UE4SS/wiki/Table-ModifierKey
+AOEPickupMode = 2                           -- 1 - All, 2 - Items, 3 - Logs&Planks. Default - 1 (All)
