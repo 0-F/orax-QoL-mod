@@ -82,6 +82,21 @@ ToggleBuildAnywhereModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss
 ToggleGamePausedKey = Key.PAUSE -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 --ToggleGamePausedModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
+-- Stack size
+StackSizeModIsEnabled = true -- true - enable "stack size" modifications below | false or nil - disable "stack size" modifications below
+StackSize.Default = 9999 -- default: 10
+StackSize.Ammo = 9999 -- default: 20 (arrow)
+StackSize.Single = 1 -- default: 1
+StackSize.Food = 9999 -- default: 5 (consumable)
+StackSize.Resource = 9999 -- default: 10 (resource)
+StackSize.LargeResource = 9999 -- default: 5
+StackSize.UpgradeStones = 9999 -- default: 99
+
+-- Stack bonus
+--ItemStackBonusPerTier = 5 -- default: 5
+--MaxItemStackTier = 5 -- default: 5
+--MaxDropStackSize = 35 -- default: 35
+
 --------------------------------------------------------------------------------
 -- Options from "Configurable QoL mod" https://www.nexusmods.com/grounded/mods/82
 

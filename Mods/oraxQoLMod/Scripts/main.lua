@@ -2,8 +2,7 @@
   Credits
     The original QoL mod for Grounded was created by TheLich:
     https://www.nexusmods.com/grounded/mods/82 (Configurable QoL mod)
-]]
-
+]] --
 modName = "oraxQoLMod"
 print(modName .. " init\n")
 
@@ -45,6 +44,16 @@ DisableFOG = false
 DisableDOF = false
 
 AOEPickupMode = 1
+
+StackSize = {
+  Default = 10,
+  Ammo = 20,
+  Single = 1,
+  Food = 5,
+  Resource = 10,
+  LargeResource = 5,
+  UpgradeStones = 99
+}
 
 dofile([[Mods\oraxQoLMod\options.txt]])
 
@@ -363,6 +372,33 @@ local function UpdateGlobalItemData(globalItemData)
         itemData.ProcessingTime = itemData.ProcessingTime / math.max(0.01, ProductionSpeedMultiplier)
       end
     end)
+  end
+
+  -- Stack size
+  if StackSizeModIsEnabled == true then
+    local stackSizeValue =
+      '(((TagName="StackSize.Default"),$Default),((TagName="StackSize.Ammo"),$Ammo),((TagName="StackSize.Single"),$Single),((TagName="StackSize.Food"),$Food),((TagName="StackSize.Resource"),$Resource),((TagName="StackSize.LargeResource"),$LargeResource),((TagName="StackSize.UpgradeStones"),$UpgradeStones))'
+
+    stackSizeValue = string.gsub(stackSizeValue, "%$(%w+)", StackSize)
+
+    local property = globalItemData:Reflection():GetProperty("StackSizes")
+
+    if property:IsValid() then
+      property:ImportText(stackSizeValue, property:ContainerPtrToValuePtr(globalItemData), 0, globalItemData)
+    else
+      print("Can't find 'StackSizes' property.\n")
+    end
+  end
+
+  -- Stack bonus
+  if ItemStackBonusPerTier ~= nil then
+    globalItemData.ItemStackBonusPerTier = ItemStackBonusPerTier
+  end
+  if MaxItemStackTier ~= nil then
+    globalItemData.MaxItemStackTier = MaxItemStackTier
+  end
+  if MaxDropStackSize ~= nil then
+    globalItemData.MaxDropStackSize = MaxDropStackSize
   end
 end
 
