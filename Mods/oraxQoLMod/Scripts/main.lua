@@ -646,7 +646,7 @@ if ToggleBuildAnywhereModKey ~= nil then
 end
 
 -- Build anywhere
-function ToggleBuildAnywhereMod()
+local function ToggleBuildAnywhereMod()
   if IsBuildAnywhereEnabled then
     ShowMessage("Disable BuildAnywhere")
   else
@@ -865,7 +865,7 @@ if ToggleBuildAnywhereModKey ~= nil then
   if ToggleBuildAnywhereModModifierKeys ~= nil then
     RegisterKeyBind(ToggleBuildAnywhereModKey, ToggleBuildAnywhereModModifierKeys, ToggleBuildAnywhereMod)
   else
-    RegisterKeyBind(ToggleBuildAnywhereModKey, ToggleBuildAnywhere)
+    RegisterKeyBind(ToggleBuildAnywhereModKey, ToggleBuildAnywhereMod)
   end
 end
 
