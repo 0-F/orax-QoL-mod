@@ -3,8 +3,10 @@
     The original QoL mod for Grounded was created by TheLich:
     https://www.nexusmods.com/grounded/mods/82 (Configurable QoL mod)
 ]] --
-modName = "oraxQoLMod"
-print(modName .. " init\n")
+ModName = "oraxQoLMod"
+print(ModName .. " init\n")
+
+OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
 
 -- alternative values for some variables
 -- These values can be set in "options.txt".
@@ -55,7 +57,6 @@ StackSize = {
   UpgradeStones = 99
 }
 
-dofile([[Mods\oraxQoLMod\options.txt]])
 
 local LocalPlayerCharacter = nil
 local playerEffects = {}
@@ -558,7 +559,7 @@ local function Init()
   UpdateGameState(gameState)
   UpdateModeSettings(gameModeManager)
 
-  print(modName .. " init done\n")
+  print(ModName .. " init done\n")
 end
 
 NotifyOnNewObject("/Script/Maine.SurvivalPlayerCharacter", function(player)
@@ -657,7 +658,7 @@ local function ToggleBuildAnywhereMod()
 end
 
 -- Pause/unpause the game
-function ToggleGamePaused()
+local function ToggleGamePaused()
   local pause
   local gameplayStatics = cache.gameplayStatics
 
