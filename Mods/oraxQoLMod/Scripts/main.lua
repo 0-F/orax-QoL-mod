@@ -657,6 +657,17 @@ local function ToggleBuildAnywhereMod()
   IsBuildAnywhereEnabled = not IsBuildAnywhereEnabled
 end
 
+-- Raw Science multiplier
+if ScienceAmountMultiplier ~= nil then
+  NotifyOnNewObject("/Script/Maine.ScienceCollectable", function(self)
+    ExecuteWithDelay(2000, function()
+      if self:IsValid() then
+        self.ScienceAmount = self.ScienceAmount * ScienceAmountMultiplier
+      end
+    end)
+  end)
+end
+
 -- Pause/unpause the game
 local function ToggleGamePaused()
   local pause

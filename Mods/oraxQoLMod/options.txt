@@ -97,6 +97,9 @@ StackSize.UpgradeStones = 9999 -- default: 99
 --MaxItemStackTier = 5 -- default: 5
 --MaxDropStackSize = 35 -- default: 35
 
+-- Raw Science
+--ScienceAmountMultiplier = 5
+
 --------------------------------------------------------------------------------
 -- Options from "Configurable QoL mod" https://www.nexusmods.com/grounded/mods/82
 
