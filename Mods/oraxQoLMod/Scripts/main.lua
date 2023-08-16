@@ -804,7 +804,11 @@ if HaulingCapacity ~= nil then
     local component = self:get()
     local parent = component:GetOuter()
     if parent:IsA(characterClass) then
-      return HaulingCapacity + playerEffects[parent:GetFullName()]
+      local capacity = playerEffects[parent:GetFullName()]
+      if type(capacity) == "number" then
+        return HaulingCapacity + capacity
+      end
+      return HaulingCapacity
     end
   end)
 end
