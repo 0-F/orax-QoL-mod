@@ -599,7 +599,7 @@ if SmallHoTEffect_TimeElapsed ~= nil then
     local effect = self:get()
 
     if effect.StatusEffectRowHandle.RowName:ToString() == "SmallHoT" then
-      effect.TimeElapsed = -82800 -- 82800 seconds = 23 hours
+      effect.TimeElapsed = SmallHoTEffect_TimeElapsed
     end
   end)
 end
