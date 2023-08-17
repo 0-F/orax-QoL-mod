@@ -41,8 +41,8 @@ InfiniteItemPower = true
 --InfiniteItemPower__2 = true -- Alternative method if the first does not work. Use one or the other.
 
 -- Proximity inventory storage radius
-StorageRadius = 20000 -- default: 2000.0
--- TypeRestrictedStorageRadius = 4000 -- default: 4000.0
+StorageRadius = 20000 -- default: 2000.0 | chest storage
+TypeRestrictedStorageRadius = 20000 -- default: 4000.0 | pallet storage
 
 -- Handy Gnat
 HandyGnatMaxFlySpeed = 4800 -- default: 1200.0
