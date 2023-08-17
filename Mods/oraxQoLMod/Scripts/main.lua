@@ -372,6 +372,14 @@ local function UpdateGlobalItemData(globalItemData)
     globalItemData.ThrowDurability = ThrowDurability
   end
 
+  if ArmorHitDurability ~= nil then
+    globalItemData.ArmorHitDurability = ArmorHitDurability
+  end
+
+  if ItemUseCooldown ~= nil then
+    globalItemData.ItemUseCooldown = ItemUseCooldown
+  end
+
   if ProductionSpeedMultiplier ~= nil then
     globalItemData.ProcessingData:ForEach(function(idx)
       local itemData = globalItemData.ProcessingData[idx]
