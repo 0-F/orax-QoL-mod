@@ -145,13 +145,13 @@ IsDropModEnabled = false
 Debug.drop = false
 
 -- Enable/disable DropMod (KEYBINDINGS)
--- This file need to have the line "IsDropModEnabled = true".
+-- This file must have the line "IsDropModEnabled = true" otherwise the keyboard shortcuts will not be active.
 ToggleDropModKey = Key.L -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
 ToggleDropModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
 -- Global values, applies to all creatures/resources.
 GlobalDropAmountMultiplier = 2         -- no default
-GlobalDropChanceMin = 0.6              -- default: varies (valid values 0 (0%) - 1 (100%))
+--GlobalDropChanceMin = 0.5              -- default: varies (valid values 0 (0%) - 1 (100%))
 
 --[[
   Options DropAmountMultiplier and DropChanceMin applies to specific creatures/resources or specific items.
@@ -181,9 +181,12 @@ DropAmountMultiplier = {
 }
 -- valid values: 0 (0%) | 1 (100%) | -1 (game default)
 DropChanceMin = {
-  -- DropChanceMin for Weevil will not be modified (-1 = game default),
-  -- even if GlobalDropChanceMin is set (DropChanceMin override GlobalDropChanceMin).
+  -- DropChanceMin for Aphid, Weevil, Grub and Gnat will not be modified (-1 = game default).
+  -- Useful if GlobalDropChanceMin is set but you want game's default values for certain creatures.
+  Aphid = -1,
   Weevil = -1,
+  Grub = -1,
+  Gnat = -1,
   
   -- DropChanceMin for all items of the Ant creature is 0.9 (90 %).
   Ant = 0.9,
