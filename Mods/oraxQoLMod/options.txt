@@ -100,6 +100,107 @@ StackSize.UpgradeStones = 9999 -- default: 99
 -- Raw Science
 --ScienceAmountMultiplier = 5
 
+-- DropMod (loots from creatures/resources) [BEGIN]
+--
+--[[
+  * How to enable it?
+      Set IsDropModEnabled to true: IsDropModEnabled = true
+      
+  * How to find creature or resource name?
+      Set the option "Debug.drop = true".
+      Open UE4SS.log.
+      When a creature/resource drop something, the end of the UE4SS.log file will contain debug information.
+      For example, debug information when I kill a Weevil:
+[2023-08-16 15:47:58] [Lua] Drop table (original) for BP_Weevil_C_2147399844
+[2023-08-16 15:47:58] [Lua] Creature/resource name: Weevil
+- Item 1: WeevilNose
+    Count: 1
+    DropChance: 0.30000001192093
+- Item 2: WeevilMeat
+    Count: 1
+    DropChance: 1.0
+- Item 3: PetTombstoneWeevil
+    Count: 1
+    DropChance: 1.0
+- Item 4: None
+    Count: 1
+    DropChance: 1.0
+- Item 5: None
+    Count: 1
+    DropChance: 1.0
+- Item 6: MushroomChunk
+    Count: 1
+    DropChance: 0.0099999997764826
+- Item 7: WeevilMeat
+    Count: 1
+    DropChance: 0.0099999997764826
+]]
+
+-- true - enable DropMod | false (or commented) - disable DropMod
+IsDropModEnabled = false
+
+-- true - writes debug messages in the UE4SS.log file | false - no debug messages
+-- This option may cause lags.
+Debug.drop = false
+
+-- Enable/disable DropMod (KEYBINDINGS)
+-- This file need to have the line "IsDropModEnabled = true".
+ToggleDropModKey = Key.L -- https://docs.ue4ss.com/lua-api/table-definitions/key.html
+ToggleDropModModifierKeys = {ModifierKey.CONTROL} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
+
+-- Global values, applies to all creatures/resources.
+GlobalDropAmountMultiplier = 2         -- no default
+GlobalDropChanceMin = 0.6              -- default: varies (valid values 0 (0%) - 1 (100%))
+
+--[[
+  Options DropAmountMultiplier and DropChanceMin applies to specific creatures/resources or specific items.
+  
+  examples for DropAmountMultiplier:
+  
+    Aphid = 10 -- the amount of drop for the creature Aphid is increased by 10
+    Aphid = 0  -- Aphid will not drop anything
+    Aphid = 1  -- default game value
+    Aphid = { AphidMeat = 0 } -- Aphid will not drop AphidMeat item
+    
+    -- WeevilNose drop is increased by 10,
+    -- Weevil will not drop WeevilMeat
+    -- and MushroomChunk drop amount is the default game value.
+    Weevil = { WeevilNose = 5, WeevilMeat = 0, MushroomChunk = 1 }
+]]
+DropAmountMultiplier = {
+  -- Aphid will not drop AphidMeat
+  Aphid = { AphidMeat = 0 },
+  
+  -- Weevil will not drop WeevilMeat
+  Weevil = { WeevilMeat = 0 },
+  
+  -- GrassBlade and Log drop amount is the default game value
+  GrassBlade = 1,
+  Log = 1,
+}
+-- valid values: 0 (0%) | 1 (100%) | -1 (game default)
+DropChanceMin = {
+  -- DropChanceMin for Weevil will not be modified (-1 = game default),
+  -- even if GlobalDropChanceMin is set (DropChanceMin override GlobalDropChanceMin).
+  Weevil = -1,
+  
+  -- DropChanceMin for all items of the Ant creature is 0.9 (90 %).
+  Ant = 0.9,
+
+  -- DropChanceMin for the Spider_Small creature:
+  --   1 (100 %) for the Web item
+  --   0.1 (10 %) for the SpiderChunk item.
+  Spider_Small = { Web = 1, SpiderChunk = 0.1 },
+  
+  -- DropChanceMin for all items of the Mushroom_Toadstool is 0.5 (50 %).
+  Mushroom_Toadstool = 0.5,
+  
+  -- DropChanceMin for AccessoryArrowTrigger (Fancy Fletching trinket) is 1 (100 %)
+  Feather = { AccessoryArrowTrigger = 1 },
+}
+--
+-- DropMod [END]
+
 --------------------------------------------------------------------------------
 -- Options from "Configurable QoL mod" https://www.nexusmods.com/grounded/mods/82
 

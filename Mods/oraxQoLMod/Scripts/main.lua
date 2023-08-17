@@ -8,6 +8,8 @@ print(ModName .. " init\n")
 
 OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
 
+Debug = {}
+
 -- alternative values for some variables
 -- These values can be set in "options.txt".
 Alt = {}
@@ -15,6 +17,7 @@ Alt = {}
 IsInteractTimerModEnabled = false
 IsZiplineModEnabled = false
 IsBuildAnywhereEnabled = false
+IsDropModEnabled = false
 
 -- hook variables
 PreIdBuildAnywhere = 0
@@ -57,6 +60,10 @@ StackSize = {
   UpgradeStones = 99
 }
 
+DropAmountMultiplier = {}
+DropChanceMin = {}
+
+dofile(OptionsFile)
 
 local LocalPlayerCharacter = nil
 local playerEffects = {}
@@ -686,6 +693,17 @@ local function ToggleGamePaused()
   return pause
 end
 
+-- Drop mod (loot)
+local function ToggleDropMod()
+  IsDropModEnabled = not IsDropModEnabled
+
+  if IsDropModEnabled then
+    ShowMessage("Drop mod enabled")
+  else
+    ShowMessage("Drop mod disabled")
+  end
+end
+
 if LogStorageCapacity ~= nil or PlankStorageCapacity ~= nil then
   NotifyOnNewObject("/Script/Maine.TypeRestrictedStorageBuilding", function(createdObject)
     if LogStorageCapacity ~= nil and
@@ -735,54 +753,130 @@ if MaxActiveMutations ~= nil then
   end)
 end
 
-if DropAmountMultiplier ~= nil or DropChanceMin ~= nil then
-  RegisterHook("/Script/Maine.LootComponent:SpawnLoot", function(self, looter, spawnType)
+if IsDropModEnabled then
+  local function setDropValues(lootComponent, dropAmountMultiplier, dropChanceMin)
+    lootComponent.Items:ForEach(function(index)
+      -- item is a ScriptStruct /Script/Maine.LootData
+      local item = lootComponent.Items[index]
+      local itemName = item.ItemData.RowName:ToString()
+
+      if ItemsDropAmountMultiplier[itemName] ~= nil then
+        dropAmountMultiplier = ItemsDropAmountMultiplier[itemName]
+      end
+      if ItemsDropChanceMin[itemName] ~= nil then
+        dropChanceMin = ItemsDropChanceMin[itemName]
+      end
+
+      if dropAmountMultiplier ~= nil then
+        item.Count = math.floor(item.Count * dropAmountMultiplier)
+      end
+      if dropChanceMin ~= nil and item.DropChance < dropChanceMin then
+        item.DropChance = math.min(1, dropChanceMin)
+      end
+
+      if Debug.drop then
+        printf("item=%s dropAmountMultiplier=%s dropChanceMin=%s\n", itemName, dropAmountMultiplier, dropChanceMin)
+      end
+    end)
+  end
+
+  local function debugDrop(lootComponent, name)
+    local text = string.format("Creature/resource name: %s\n", name)
+
+    lootComponent.Items:ForEach(function(index, elem)
+      local item = elem:get()
+      local itemName = item.ItemData.RowName:ToString()
+
+      text = text .. string.format("- Item %s: %s\n", index, itemName)
+
+      text = text .. string.format("    Count: %s\n", item.Count)
+      text = text .. string.format("    DropChance: %s\n", item.DropChance)
+    end)
+
+    return text
+  end
+
+  RegisterHook("/Script/Maine.LootComponent:OnDeath", function(self)
+    if not IsDropModEnabled then
+      return
+    end
+
     local lootComponent = self:get()
-    if nodeUpdated[lootComponent:GetOuter():GetAddress()] then
-      nodeUpdated[lootComponent:GetOuter():GetAddress()] = nil
-      return
+    local fname = lootComponent:GetOuter():GetFName():ToString()
+    local name = fname
+
+    -- clean the FName
+    -- ex: "BP_Mushroom_Toadstool_B_C_2147421672" -> Mushroom_Toadstool
+    name = string.gsub(name, "_%w%f[_]", "") -- _A followed by _ -> _
+    name = string.gsub(name, "_%d+$", "") -- _123456789 -> ""
+    name = string.gsub(name, "^BP_", "") -- BP_ -> ""
+
+    -- global values
+    local dropAmountMultiplier = GlobalDropAmountMultiplier
+    local dropChanceMin = GlobalDropChanceMin
+
+    -- values specific to creatures and non-creatures
+    -- the multiplier applies on all items of the (non-)creature
+    --[[
+      example:
+        DropAmountMultiplier = {
+          Aphid = 0 -- creature name
+        }
+    ]]
+    if type(DropAmountMultiplier[name]) == "number" then
+      dropAmountMultiplier = DropAmountMultiplier[name]
     end
-    lootComponent.Items:ForEach(function(lootIdx)
-      local item = lootComponent.Items[lootIdx]
-      if DropAmountMultiplier ~= nil then
-        item.Count = math.floor(item.Count * DropAmountMultiplier)
+    if type(DropChanceMin[name]) == "number" then
+      dropChanceMin = DropChanceMin[name]
+    end
+
+    local debugText
+    if Debug.drop then
+      debugText = debugDrop(lootComponent, name)
+      printf("Drop table (original) for %s\n", fname)
+      print(debugText)
+    end
+
+    -- values specific to items than creatures and non-creatures can drop
+    --[[
+      example:
+        DropAmountMultiplier = {
+          Aphid = {       -- creature name
+            AphidMeat = 0 -- item name
+          }
+        }
+    ]]
+    lootComponent.Items:ForEach(function(index, elem)
+      -- item is a ScriptStruct /Script/Maine.LootData
+      local item = elem:get()
+      local itemName = item.ItemData.RowName:ToString()
+      local itemDropAmountMultiplier = dropAmountMultiplier
+      local itemDropChanceMin = dropChanceMin
+
+      if type(DropAmountMultiplier[name]) == "table" and DropAmountMultiplier[name][itemName] ~= nil then
+        itemDropAmountMultiplier = DropAmountMultiplier[name][itemName]
       end
-      if DropChanceMin ~= nil and item.DropChance < DropChanceMin then
-        item.DropChance = math.min(1, DropChanceMin)
+      if type(DropChanceMin[name]) == "table" and DropChanceMin[name][itemName] ~= nil then
+        itemDropChanceMin = DropChanceMin[name][itemName]
+      end
+
+      if itemDropAmountMultiplier ~= nil and itemDropAmountMultiplier ~= 1 and itemName ~= "None" then
+        item.Count = math.floor(item.Count * itemDropAmountMultiplier)
+      end
+      if itemDropChanceMin ~= nil and itemDropChanceMin ~= -1 and item.DropChance < itemDropChanceMin then
+        item.DropChance = math.min(1, itemDropChanceMin)
       end
     end)
-  end)
-  RegisterHook("/Script/Maine.HarvestNode:OnDamaged", function(self)
-    local node = self:get()
-    if nodeUpdated[node:GetAddress()] then
-      return
-    end
-    nodeUpdated[node:GetAddress()] = true
-    local lootComponent = node.LootComponent
-    lootComponent.Items:ForEach(function(lootIdx)
-      local item = lootComponent.Items[lootIdx]
-      if DropAmountMultiplier ~= nil then
-        item.Count = math.floor(item.Count * DropAmountMultiplier)
+
+    if Debug.drop then
+      local debugText2 = debugDrop(lootComponent, name)
+
+      if debugText == debugText2 then
+        printf("Drop table is not modified for %s\n", fname)
+      else
+        printf("Drop table (modified) for %s\n", fname)
+        print(debugText2)
       end
-      if DropChanceMin ~= nil and item.DropChance < DropChanceMin then
-        item.DropChance = math.min(1, DropChanceMin)
-      end
-    end)
-  end)
-  local creatureClass = StaticFindObject("/Script/Maine.SurvivalCreature")
-  RegisterHook("/Script/Maine.SurvivalCharacter:OnDeath", function(self)
-    local character = self:get()
-    if character:IsA(creatureClass) then
-      local lootComponent = character.LootComponent
-      lootComponent.Items:ForEach(function(lootIdx)
-        local item = lootComponent.Items[lootIdx]
-        if DropAmountMultiplier ~= nil then
-          item.Count = math.floor(item.Count * DropAmountMultiplier)
-        end
-        if DropChanceMin ~= nil and item.DropChance < DropChanceMin then
-          item.DropChance = math.min(1, DropChanceMin)
-        end
-      end)
     end
   end)
 end
@@ -886,5 +980,15 @@ if ToggleGamePausedKey ~= nil then
     RegisterKeyBind(ToggleGamePausedKey, ToggleGamePausedModifierKeys, ToggleGamePaused)
   else
     RegisterKeyBind(ToggleGamePausedKey, ToggleGamePaused)
+  end
+end
+
+if IsDropModEnabled then
+  if ToggleDropModKey ~= nil then
+    if ToggleDropModModifierKeys ~= nil then
+      RegisterKeyBind(ToggleDropModKey, ToggleDropModModifierKeys, ToggleDropMod)
+    else
+      RegisterKeyBind(ToggleDropModKey, ToggleDropMod)
+    end
   end
 end
