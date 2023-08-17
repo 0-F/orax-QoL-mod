@@ -38,6 +38,7 @@ SmallHoTEffect_TimeElapsed = -82800 -- default: 160.0 (in seconds), 82800 second
 
 -- Infinite item power (for torch) - https://grounded.fandom.com/wiki/Category:Tools/Light
 InfiniteItemPower = true
+--InfiniteItemPower__2 = true -- Alternative method if the first does not work. Use one or the other.
 
 -- Proximity inventory storage radius
 StorageRadius = 20000 -- default: 2000.0

@@ -625,6 +625,11 @@ if InfiniteItemPower == true then
     end)
   end)
 end
+if InfiniteItemPower__2 == true then
+  RegisterHook("/Script/Maine.Item:GetPowerPercentage", function(self)
+    return 1.0
+  end)
+end
 
 -- Production
 if MaxProductionItems ~= nil then
