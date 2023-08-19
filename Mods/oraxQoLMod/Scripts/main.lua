@@ -717,7 +717,8 @@ local function ToggleDropMod()
   end
 end
 
-if LogStorageCapacity ~= nil or PlankStorageCapacity ~= nil then
+if LogStorageCapacity ~= nil or PlankStorageCapacity ~= nil or LargePlankStorageCapacity ~= nil or
+  LargeLogStorageCapacity ~= nil then
   NotifyOnNewObject("/Script/Maine.TypeRestrictedStorageBuilding", function(createdObject)
     if LogStorageCapacity ~= nil and
       createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_LogStorage.BP_LogStorage_C") then
@@ -725,11 +726,18 @@ if LogStorageCapacity ~= nil or PlankStorageCapacity ~= nil then
     elseif PlankStorageCapacity ~= nil and
       createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_PlankStorage.BP_PlankStorage_C") then
       createdObject.Capacity = PlankStorageCapacity
+    elseif LargePlankStorageCapacity ~= nil and
+      createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_PlankStorage_Tier3.BP_PlankStorage_Tier3_C") then
+      createdObject.Capacity = LargePlankStorageCapacity
+    elseif LargeLogStorageCapacity ~= nil and
+      createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_LogStorage_Tier3.BP_LogStorage_Tier3_C") then
+      createdObject.Capacity = LargeLogStorageCapacity
     end
   end)
 end
 
-if SmallStorageCapacity ~= nil or BigStorageCapacity ~= nil or FridgeStorageCapacity ~= nil then
+if SmallStorageCapacity ~= nil or BigStorageCapacity ~= nil or LargeStorageCapacity ~= nil or FridgeStorageCapacity ~=
+  nil then
   NotifyOnNewObject("/Script/Maine.StorageBuilding", function(createdObject)
     if SmallStorageCapacity ~= nil and
       createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_Storage.BP_Storage_C") then
@@ -737,6 +745,9 @@ if SmallStorageCapacity ~= nil or BigStorageCapacity ~= nil or FridgeStorageCapa
     elseif BigStorageCapacity ~= nil and
       createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_Storage_Big.BP_Storage_Big_C") then
       createdObject.InventoryComponent.MaxSize = BigStorageCapacity
+    elseif LargeStorageCapacity ~= nil and
+      createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_Storage_Tier3.BP_Storage_Tier3_C") then
+      createdObject.InventoryComponent.MaxSize = LargeStorageCapacity
     elseif FridgeStorageCapacity ~= nil and
       createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_StorageFridge.BP_StorageFridge_C") then
       createdObject.InventoryComponent.MaxSize = FridgeStorageCapacity
