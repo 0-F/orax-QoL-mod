@@ -730,7 +730,7 @@ if LogStorageCapacity ~= nil or PlankStorageCapacity ~= nil then
 end
 
 if SmallStorageCapacity ~= nil or BigStorageCapacity ~= nil or FridgeStorageCapacity ~= nil then
-  NotifyOnNewObject("/Script/Maine.Storage", function(createdObject)
+  NotifyOnNewObject("/Script/Maine.StorageBuilding", function(createdObject)
     if SmallStorageCapacity ~= nil and
       createdObject:IsA("/Game/Blueprints/Items/Buildings/Storage/BP_Storage.BP_Storage_C") then
       createdObject.InventoryComponent.MaxSize = SmallStorageCapacity
