@@ -439,12 +439,40 @@ local function UpdateModeSettings(gameModeManager)
   local modeSettings = gameModeManager:GetGameModeSettings()
   local CDO = modeSettings:GetClass():GetCDO()
   if CDO:IsValid() then
+    if HungerAndThirstMultiplier ~= nil then
+      CDO.HungerAndThirstMultiplier = HungerAndThirstMultiplier
+    end
+
     if PlayerDamageMultiplier ~= nil then
       CDO.PlayerDamageMultiplier = PlayerDamageMultiplier
     end
 
     if EnemyDamageMultiplier ~= nil then
       CDO.EnemyDamageMultiplier = EnemyDamageMultiplier
+    end
+
+    if BuildingHealthMultiplier ~= nil then
+      CDO.BuildingHealthMultiplier = BuildingHealthMultiplier
+    end
+
+    if HeatMultiplier ~= nil then
+      CDO.HeatMultiplier = HeatMultiplier
+    end
+
+    if ItemSpoilageMultiplier ~= nil then
+      CDO.ItemSpoilageMultiplier = ItemSpoilageMultiplier
+    end
+
+    if ItemDurabilityMultiplier ~= nil then
+      CDO.ItemDurabilityMultiplier = ItemDurabilityMultiplier
+    end
+
+    if ItemDurabilityPenaltyOnDeathPercentage ~= nil then
+      CDO.ItemDurabilityPenaltyOnDeathPercentage = ItemDurabilityPenaltyOnDeathPercentage
+    end
+
+    if SizzleMultiplier ~= nil then
+      CDO.SizzleMultiplier = SizzleMultiplier -- 0.1
     end
   end
 end

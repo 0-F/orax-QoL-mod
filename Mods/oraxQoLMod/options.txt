@@ -215,8 +215,19 @@ ThrowDurability = 1              -- default: 1
 ArmorHitDurability = 1           -- default: 1
 --ItemUseCooldown = 1              -- default: 1
 MaxActiveMutations = 15          -- default: 2
---PlayerDamageMultiplier = 1     -- default: 1
---EnemyDamageMultiplier = 1      -- default: 1
+
+-- Game Mode Settings | There are other settings in "Menu > Game Settings" in the game.
+--
+--HungerAndThirstMultiplier = 1              -- default: 1.0
+--PlayerDamageMultiplier = 1                 -- default: 1.0
+--EnemyDamageMultiplier = 1                  -- default: 1.0
+--BuildingHealthMultiplier = 1               -- default: 1.0
+--HeatMultiplier = 1                         -- default: 1.0
+--ItemSpoilageMultiplier = 1                 -- default: 1.0
+--ItemDurabilityMultiplier = 1               -- default: 1.0
+--ItemDurabilityPenaltyOnDeathPercentage = 1 -- default: 1.0
+--SizzleMultiplier = 1                       -- default: 0.1
+
 GameToRealTimeRatio = 10         -- default: 30
 PerfectBlockWindow = 0.5         -- default: 0.25
 DewCollectorAmountPerHour = 15   -- default: 5
