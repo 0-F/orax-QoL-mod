@@ -586,17 +586,17 @@ local function OnFirstInit()
   -- Raw Science
   -- Science Amount Max
   if ScienceAmountMultiplier ~= nil or ScienceAmountMax ~= nil then
-    local Int32SignedMax = 2147483647
+    local signedInt32Max = 2147483647
 
     -- valid values: 0 to 2147483647
     if ScienceAmountMax == nil then
-      ScienceAmountMax = Int32SignedMax
+      ScienceAmountMax = signedInt32Max
     elseif ScienceAmountMax < 0 then
       ScienceAmountMax = 0
-    elseif ScienceAmountMax > Int32SignedMax then
-      ScienceAmountMax = Int32SignedMax
+    elseif ScienceAmountMax > signedInt32Max then
+      ScienceAmountMax = signedInt32Max
     else
-      ScienceAmountMax = math.min(Int32SignedMax, ScienceAmountMax)
+      ScienceAmountMax = math.min(signedInt32Max, ScienceAmountMax)
     end
 
     RegisterHook("/Script/Maine.PartyComponent:ServerAddScienceFound", function(self, ScienceAmount)
