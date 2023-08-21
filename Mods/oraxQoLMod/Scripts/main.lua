@@ -637,6 +637,22 @@ NotifyOnNewObject("/Script/Maine.BuilderMovementComponent", function(builder)
 
 end)
 
+-- Bird (Crow)
+if BirdLandedTimeLowerBound ~= nil or BirdLandedTimeUpperBound ~= nil or BirdTimeBetweenSpawnsLowerBound ~= nil or
+  BirdTimeBetweenSpawnsUpperBound ~= nil or BirdFlySpeed ~= nil then
+  NotifyOnNewObject("/Script/Maine.Bird", function(self)
+    ExecuteWithDelay(2000, function()
+      self.LandedTime.LowerBound.Value = BirdLandedTimeLowerBound -- default: 120.0
+      self.LandedTime.UpperBound.Value = BirdLandedTimeUpperBound -- default: 300.0
+
+      self.TimeBetweenSpawns.LowerBound.Value = BirdTimeBetweenSpawnsLowerBound -- default: 400.0
+      self.TimeBetweenSpawns.UpperBound.Value = BirdTimeBetweenSpawnsUpperBound -- default: 800.0
+
+      self.FlySpeed = BirdFlySpeed -- 20000.0
+    end)
+  end)
+end
+
 -- https://grounded.fandom.com/wiki/Status_Effects#Trickle_Regen
 if SmallHoTEffect_TimeElapsed ~= nil then
   RegisterHook("/Script/Maine.StatusEffect:GetDataHandle", function(self)

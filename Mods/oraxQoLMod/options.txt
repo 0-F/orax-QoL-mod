@@ -52,6 +52,13 @@ HandyGnatBrakingFrictionFactor = 40 -- default: 2.0
 --HandyGnatBrakingSubStepTime = 0.03 -- default: 0.030303031206131
 --HandyGnatBrakingDecelerationFlying = 1000 -- default: 1000.0
 
+-- Bird (Crow)
+--BirdLandedTimeLowerBound = 120        -- default: 120.0   | Landed time (min)
+--BirdLandedTimeUpperBound = 300        -- default: 300.0   | Landed time (max)
+--BirdTimeBetweenSpawnsLowerBound = 400 -- default: 400.0   | Time between spawns (min)
+--BirdTimeBetweenSpawnsUpperBound = 800 -- default: 800.0   | Time between spawns (max)
+--BirdFlySpeed = 20000                  -- default: 20000.0 | Fly speed
+
 -- Player interactions
 InteractTimerMax = 0.3 -- (SUPER BUILD, ...) default: 0.6
 Alt.InteractTimerMax = 0 -- alternative value | you need to use the keybindings below to set this value
