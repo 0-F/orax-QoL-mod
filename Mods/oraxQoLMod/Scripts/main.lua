@@ -583,7 +583,17 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
 end
 
 local function OnFirstInit()
+
+  local partyComponent = cache.survivalGameplayStatics:GetPartyComponent(cache.engine.GameViewport)
+
   -- Raw Science
+  --
+  -- fix negative value of ScienceFound (current Raw Science)
+  -- valid values: 0 to 2147483647
+  if partyComponent.ScienceFound < 1 then
+    partyComponent.ScienceFound = 0
+  end
+  --
   -- Science Amount Max
   if ScienceAmountMultiplier ~= nil or ScienceAmountMax ~= nil then
     local signedInt32Max = 2147483647
@@ -623,7 +633,6 @@ local function OnFirstInit()
         -- /Script/Maine.PartyComponent:OnScienceFoundChangedDelegate => (UI_ScienceFoundNotification.OnScienceChanged)
         local added = scienceAdded:get()
         local total = totalScience:get()
-        local partyComponent = cache.survivalGameplayStatics:GetPartyComponent(cache.engine.GameViewport)
 
         if total < added or total < 0 or total > ScienceAmountMax then
           partyComponent.ScienceFound = ScienceAmountMax
