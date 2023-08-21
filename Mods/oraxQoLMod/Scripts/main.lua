@@ -8,6 +8,8 @@ print(ModName .. " init\n")
 
 OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
 
+IsFirstInit = true
+
 Debug = {}
 
 -- alternative values for some variables
@@ -580,6 +582,56 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
   RegisterHook("/Script/Maine.SurvivalGameState:GetActiveBossForPlayer", PickupLoop)
 end
 
+local function OnFirstInit()
+  -- Raw Science
+  -- Science Amount Max
+  if ScienceAmountMultiplier ~= nil or ScienceAmountMax ~= nil then
+    local Int32SignedMax = 2147483647
+
+    -- valid values: 0 to 2147483647
+    if ScienceAmountMax == nil then
+      ScienceAmountMax = Int32SignedMax
+    elseif ScienceAmountMax < 0 then
+      ScienceAmountMax = 0
+    elseif ScienceAmountMax > Int32SignedMax then
+      ScienceAmountMax = Int32SignedMax
+    else
+      ScienceAmountMax = math.min(Int32SignedMax, ScienceAmountMax)
+    end
+
+    RegisterHook("/Script/Maine.PartyComponent:ServerAddScienceFound", function(self, ScienceAmount)
+      local partyComponent = self:get()
+      local added = ScienceAmount:get()
+
+      -- bugged cases
+      if partyComponent.ScienceFound < 0 or added < 0 then
+        partyComponent.ScienceFound = ScienceAmountMax
+        ScienceAmount:set(0)
+        return
+      end
+
+      if ScienceAmountMultiplier ~= nil then
+        local addedNew = math.min(partyComponent.ScienceFound + added * ScienceAmountMultiplier, ScienceAmountMax) -
+                           partyComponent.ScienceFound
+        ScienceAmount:set(addedNew)
+      end
+    end)
+
+    RegisterHook(
+      "/Game/UI/HUD/Notifications/UI_ScienceFoundNotification.UI_ScienceFoundNotification_C:OnScienceChanged",
+      function(self, scienceAdded, totalScience)
+        -- /Script/Maine.PartyComponent:OnScienceFoundChangedDelegate => (UI_ScienceFoundNotification.OnScienceChanged)
+        local added = scienceAdded:get()
+        local total = totalScience:get()
+        local partyComponent = cache.survivalGameplayStatics:GetPartyComponent(cache.engine.GameViewport)
+
+        if total < added or total < 0 or total > ScienceAmountMax then
+          partyComponent.ScienceFound = ScienceAmountMax
+        end
+      end)
+  end
+end
+
 local function Init()
   local survivalGameplayStatics = cache.survivalGameplayStatics
   local engine = cache.engine
@@ -601,6 +653,12 @@ local function Init()
   UpdateGlobalItemData(globalItemData)
   UpdateGameState(gameState)
   UpdateModeSettings(gameModeManager)
+
+  if IsFirstInit == true then
+    OnFirstInit()
+  end
+
+  IsFirstInit = false
 
   print(ModName .. " init done\n")
 end
@@ -719,17 +777,6 @@ local function ToggleBuildAnywhereMod()
   end
 
   IsBuildAnywhereEnabled = not IsBuildAnywhereEnabled
-end
-
--- Raw Science multiplier
-if ScienceAmountMultiplier ~= nil then
-  NotifyOnNewObject("/Script/Maine.ScienceCollectable", function(self)
-    ExecuteWithDelay(2000, function()
-      if self:IsValid() then
-        self.ScienceAmount = self.ScienceAmount * ScienceAmountMultiplier
-      end
-    end)
-  end)
 end
 
 -- Pause/unpause the game

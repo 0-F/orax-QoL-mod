@@ -106,7 +106,8 @@ StackSize.UpgradeStones = 9999 -- default: 99
 --MaxDropStackSize = 35 -- default: 35
 
 -- Raw Science
---ScienceAmountMultiplier = 5
+--ScienceAmountMultiplier = 5 -- multiplier for science found
+--ScienceAmountMax = 1000000 -- total amount of science you can have (valid values: 0 to 2147483647)
 
 -- DropMod (loots from creatures/resources) [BEGIN]
 --
