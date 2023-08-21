@@ -133,7 +133,7 @@ function PostPlayerChatMessage(message)
   end
 end
 
-function SetupInteractTimerMod()
+local function SetupInteractTimerMod()
   if InteractTimerMax ~= nil then
     LocalPlayerCharacter.InteractTimerMax = InteractTimerMax
   end
