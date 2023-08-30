@@ -730,6 +730,15 @@ if SmallHoTEffect_TimeElapsed ~= nil then
     end
   end)
 end
+if SmallHoTEffect_TimeElapsed__2 ~= nil then
+  RegisterHook("/Script/Maine.HealthComponent:OnStatusEffectChanged", function(self, owner, statusEffect)
+    local effect = statusEffect:get()
+
+    if effect.StatusEffectRowHandle.RowName:ToString() == "SmallHoT" then
+      effect.TimeElapsed = SmallHoTEffect_TimeElapsed__2
+    end
+  end)
+end
 
 -- Infinite power (for torch) - https://grounded.fandom.com/wiki/Category:Tools/Light
 if InfiniteItemPower == true then
