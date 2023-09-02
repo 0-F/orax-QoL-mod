@@ -24,6 +24,29 @@ IsDropModEnabled = false
 -- hook variables
 PreIdBuildAnywhere = 0
 PostIdBuildAnywhere = 0
+-- Enum /Script/Maine.EPlayerStatType
+local EPlayerStatType = {
+  None = 0,
+  Kill = 1,
+  CraftItem = 2,
+  PickupItem = 3,
+  Revive = 4,
+  Discover = 5,
+  Stamina = 6,
+  BasketballShot = 7,
+  TamePet = 8,
+  ProcessItem = 9,
+  ZiplineDistance = 10,
+  UseItem = 11,
+  Block = 12,
+  Scripted = 13,
+  TakePhoto = 14,
+  RangedAttack = 15,
+  DefensePoint = 16,
+  Death = 17,
+  Coziness = 18,
+  EPlayerStatType_MAX = 19
+}
 
 -- Enum /Script/Maine.EBuildingState
 EBuildingState = {
@@ -673,7 +696,7 @@ local function Init()
 end
 
 NotifyOnNewObject("/Script/Maine.SurvivalPlayerCharacter", function(player)
-  playerEffects[player:GetFullName()] = player.StatusEffectComponent:GetValueForStat(9)
+  playerEffects[player:GetFullName()] = player.StatusEffectComponent:GetValueForStat(EPlayerStatType.ProcessItem)
   ExecuteWithDelay(2000, function()
     UpdatePlayer(player)
   end)
@@ -1033,10 +1056,12 @@ end
 
 local characterClass = StaticFindObject("/Script/Maine.SurvivalPlayerCharacter")
 if HaulingCapacity ~= nil then
-  RegisterHook("/Script/Maine.SurvivalCharacter:OnStatusEffectChanged", function(self)
-    local character = self:get()
+  RegisterHook("/Script/Maine.HaulingComponent:OnStatusEffectChanged", function(self)
+    local component = self:get()
+    local character = component:GetOuter()
     if character:IsA(characterClass) then
-      playerEffects[character:GetFullName()] = character.StatusEffectComponent:GetValueForStat(9)
+      playerEffects[character:GetFullName()] = character.StatusEffectComponent:GetValueForStat(
+        EPlayerStatType.ProcessItem)
     end
   end)
   RegisterHook("/Script/Maine.HaulingComponent:GetAdjustedCapacity", function(self)
