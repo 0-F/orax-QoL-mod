@@ -24,6 +24,7 @@ IsDropModEnabled = false
 -- hook variables
 PreIdBuildAnywhere = 0
 PostIdBuildAnywhere = 0
+
 -- Enum /Script/Maine.EPlayerStatType
 local EPlayerStatType = {
   None = 0,
@@ -158,15 +159,15 @@ function PostPlayerChatMessage(message)
   end
 end
 
-local function SetupInteractTimerMod()
+local function SetupInteractTimerMod(player)
   if InteractTimerMax ~= nil then
-    LocalPlayerCharacter.InteractTimerMax = InteractTimerMax
+    player.InteractTimerMax = InteractTimerMax
   end
   if DropInteractTimerMax ~= nil then
-    LocalPlayerCharacter.DropInteractTimerMax = DropInteractTimerMax
+    player.DropInteractTimerMax = DropInteractTimerMax
   end
   if CancelInteractTimerMax ~= nil then
-    LocalPlayerCharacter.CancelInteractTimerMax = CancelInteractTimerMax
+    player.CancelInteractTimerMax = CancelInteractTimerMax
   end
 end
 
@@ -187,8 +188,8 @@ local function ToggleInteractTimerMod()
   IsInteractTimerModEnabled = not IsInteractTimerModEnabled
 end
 
-local function SetupZiplineMod()
-  local moveComp = LocalPlayerCharacter.CharMovementComponent
+local function SetupZiplineMod(player)
+  local moveComp = player.CharMovementComponent
 
   if ZiplineIgnoreCollisionDistance ~= nil then
     moveComp.ZiplineIgnoreCollisionDistance = ZiplineIgnoreCollisionDistance
@@ -220,7 +221,7 @@ local function ToggleZiplineMod()
     moveComp.ZiplineMaxAscendSpeed = Alt.ZiplineMaxAscendSpeed
   else
     ShowMessage("ZiplineMod: enable", cache.icon_Zipline)
-    SetupZiplineMod()
+    SetupZiplineMod(LocalPlayerCharacter)
   end
 
   ShowMessage("IgnoreCollisionDistance = " .. moveComp.ZiplineIgnoreCollisionDistance, cache.icon_Zipline)
@@ -353,11 +354,11 @@ local function UpdatePlayer(player)
   if BuildModeInteractionRangeMultiplier ~= nil then
     player.BuildModeInteractionRangeMultiplier = BuildModeInteractionRangeMultiplier
   end
-  SetupInteractTimerMod()
+  SetupInteractTimerMod(player)
   IsInteractTimerModEnabled = true
 
   -- "Zipline"
-  SetupZiplineMod()
+  SetupZiplineMod(player)
   IsZiplineModEnabled = true
 
   if HaulingCapacity ~= nil then
@@ -534,6 +535,7 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
 
   local function LookForPickupNearby()
     if not LocalPlayerCharacter or not LocalPlayerCharacter:IsValid() then
+      print("LocalPlayerCharacter is invalid.\n")
       return
     end
 
@@ -665,39 +667,41 @@ local function OnFirstInit()
 end
 
 local function Init()
-  local survivalGameplayStatics = cache.survivalGameplayStatics
-  local engine = cache.engine
-  if not engine or not survivalGameplayStatics then
-    print("Engine or SurvivalGameplayStatics instance not found\n")
-    return
-  end
+  LocalPlayerCharacter = nil
 
-  local player = survivalGameplayStatics:GetLocalSurvivalPlayerCharacter(engine.GameViewport)
-  if LocalPlayerCharacter ~= nil and (not player:IsValid() or LocalPlayerCharacter:GetAddress() == player:GetAddress()) then
-    return
-  end
+  ExecuteWithDelay(2000, function()
+    local survivalGameplayStatics = cache.survivalGameplayStatics
+    local engine = cache.engine
+    if not engine or not survivalGameplayStatics then
+      print("Engine or SurvivalGameplayStatics instance not found\n")
+      return
+    end
 
-  LocalPlayerCharacter = player
-  local gameModeManager = survivalGameplayStatics:GetSurvivalGameModeManager(engine.GameViewport)
-  local gameState = survivalGameplayStatics:GetSurvivalGameState(engine.GameViewport)
-  local globalItemData = survivalGameplayStatics:GetGlobalItemData()
+    local gameModeManager = survivalGameplayStatics:GetSurvivalGameModeManager(engine.GameViewport)
+    local gameState = survivalGameplayStatics:GetSurvivalGameState(engine.GameViewport)
+    local globalItemData = survivalGameplayStatics:GetGlobalItemData()
 
-  UpdateGlobalItemData(globalItemData)
-  UpdateGameState(gameState)
-  UpdateModeSettings(gameModeManager)
+    UpdateGlobalItemData(globalItemData)
+    UpdateGameState(gameState)
+    UpdateModeSettings(gameModeManager)
 
-  if IsFirstInit == true then
-    OnFirstInit()
-  end
+    if IsFirstInit == true then
+      OnFirstInit()
+    end
 
-  IsFirstInit = false
+    IsFirstInit = false
 
-  print(ModName .. " init done\n")
+    print(ModName .. " init done\n")
+  end)
 end
 
 NotifyOnNewObject("/Script/Maine.SurvivalPlayerCharacter", function(player)
   playerEffects[player:GetFullName()] = player.StatusEffectComponent:GetValueForStat(EPlayerStatType.ProcessItem)
+
   ExecuteWithDelay(2000, function()
+    if player.InputComponent:IsValid() then
+      LocalPlayerCharacter = player
+    end
     UpdatePlayer(player)
   end)
 end)
