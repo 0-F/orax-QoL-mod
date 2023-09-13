@@ -34,8 +34,8 @@ ToggleZiplineModKey = Key.HOME -- https://docs.ue4ss.com/lua-api/table-definitio
 ToggleZiplineModModifierKeys = {ModifierKey.SHIFT} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
 -- Effect "+Trickle Regen" with "Fiber Bandage" - https://grounded.fandom.com/wiki/Status_Effects#Trickle_Regen
-SmallHoTEffect_TimeElapsed = -82800 -- default: 160.0 (in seconds), 82800 seconds = 23 hours
---SmallHoTEffect_TimeElapsed__2 = -82800 -- default: 160.0 | Alternative method if the first does not work. Use one or the other.
+SmallHoTEffect_TimeElapsed = -82800 -- default: 0 (in seconds), 82800 seconds = 23 hours
+--SmallHoTEffect_TimeElapsed__2 = -82800 -- default: 0 | Alternative method if the first does not work. Use one or the other.
 
 -- Infinite item power (for torch) - https://grounded.fandom.com/wiki/Category:Tools/Light
 InfiniteItemPower = true
