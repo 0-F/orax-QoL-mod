@@ -6,7 +6,9 @@
 ModName = "oraxQoLMod"
 print(ModName .. " init\n")
 
-OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
+if OptionsFile == nil then
+  OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
+end
 
 IsFirstInit = true
 
