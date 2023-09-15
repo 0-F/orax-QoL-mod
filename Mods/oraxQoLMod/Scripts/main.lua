@@ -505,6 +505,30 @@ local function UpdateModeSettings(gameModeManager)
   end
 end
 
+local function UpdateGlobalBuildingData(globalBuildingData)
+  -- Coziness levels
+  if CozinessLevel1 ~= nil or CozinessLevel2 ~= nil or CozinessLevel3 ~= nil or CozinessLevel4 ~= nil or CozinessLevel5 ~=
+    nil then
+    local cozinessLevels = globalBuildingData.CozinessLevels
+
+    cozinessLevels:ForEach(function(index, elem)
+      local value = elem:get().RequiredValue
+
+      if value == 500 then
+        elem:get().RequiredValue = CozinessLevel1
+      elseif value == 1000 then
+        elem:get().RequiredValue = CozinessLevel2
+      elseif value == 1500 then
+        elem:get().RequiredValue = CozinessLevel3
+      elseif value == 2000 then
+        elem:get().RequiredValue = CozinessLevel4
+      elseif value == 3000 then
+        elem:get().RequiredValue = CozinessLevel5
+      end
+    end)
+  end
+end
+
 if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
   local pickupClass = StaticFindObject("/Script/Maine.SpawnedItem")
   local dropletClass = StaticFindObject("/Script/Maine.SpawnedItemDroplet")
@@ -610,8 +634,8 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
 end
 
 local function OnFirstInit()
-
-  local partyComponent = cache.survivalGameplayStatics:GetPartyComponent(cache.engine.GameViewport)
+  local survivalGameplayStatics = cache.survivalGameplayStatics
+  local partyComponent = survivalGameplayStatics:GetPartyComponent(cache.engine.GameViewport)
 
   -- Raw Science
   --
@@ -668,6 +692,22 @@ local function OnFirstInit()
   end
 end
 
+local function OnMainMenu()
+  ExecuteWithDelay(2000, function()
+    print(ModName .. " OnMainMenu()\n")
+
+    local survivalGameplayStatics = cache.survivalGameplayStatics
+    local engine = cache.engine
+    if not engine or not survivalGameplayStatics then
+      print("Engine or SurvivalGameplayStatics instance not found\n")
+      return
+    end
+
+    local globalBuildingData = survivalGameplayStatics:GetGlobalBuildingData()
+    UpdateGlobalBuildingData(globalBuildingData)
+  end)
+end
+
 local function Init()
   LocalPlayerCharacter = nil
 
@@ -679,9 +719,9 @@ local function Init()
       return
     end
 
-    local gameModeManager = survivalGameplayStatics:GetSurvivalGameModeManager(engine.GameViewport)
-    local gameState = survivalGameplayStatics:GetSurvivalGameState(engine.GameViewport)
     local globalItemData = survivalGameplayStatics:GetGlobalItemData()
+    local gameState = survivalGameplayStatics:GetSurvivalGameState(engine.GameViewport)
+    local gameModeManager = survivalGameplayStatics:GetSurvivalGameModeManager(engine.GameViewport)
 
     UpdateGlobalItemData(globalItemData)
     UpdateGameState(gameState)
@@ -1100,6 +1140,10 @@ if DayLengthMultiplier ~= nil or NightLengthMultiplier ~= nil then
     SetDayTimeMultiplier(isDay)
   end)
 end
+
+NotifyOnNewObject("/Script/Maine.MainMenuWidget", function(object)
+  OnMainMenu()
+end)
 
 RegisterHook("/Script/Engine.PlayerController:ClientRestart", Init)
 

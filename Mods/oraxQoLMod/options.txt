@@ -110,6 +110,13 @@ StackSize.UpgradeStones = 9999 -- default: 99
 --ScienceAmountMultiplier = 5 -- multiplier for science found
 --ScienceAmountMax = 1000000 -- total amount of science you can have (valid values: 0 to 2147483647)
 
+-- Coziness levels
+--CozinessLevel1 = 50  -- default: 500
+--CozinessLevel2 = 100 -- default: 1000
+--CozinessLevel3 = 150 -- default: 1500
+--CozinessLevel4 = 200 -- default: 2000
+--CozinessLevel5 = 300 -- default: 3000
+
 -- DropMod (loots from creatures/resources) [BEGIN]
 --
 --[[
