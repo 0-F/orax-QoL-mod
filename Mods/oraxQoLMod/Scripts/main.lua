@@ -465,42 +465,41 @@ local function UpdateModeSettings(gameModeManager)
   end
 
   local modeSettings = gameModeManager:GetGameModeSettings()
-  local CDO = modeSettings:GetClass():GetCDO()
-  if CDO:IsValid() then
+  if modeSettings:IsValid() then
     if HungerAndThirstMultiplier ~= nil then
-      CDO.HungerAndThirstMultiplier = HungerAndThirstMultiplier
+      modeSettings.HungerAndThirstMultiplier = HungerAndThirstMultiplier
     end
 
     if PlayerDamageMultiplier ~= nil then
-      CDO.PlayerDamageMultiplier = PlayerDamageMultiplier
+      modeSettings.PlayerDamageMultiplier = PlayerDamageMultiplier
     end
 
     if EnemyDamageMultiplier ~= nil then
-      CDO.EnemyDamageMultiplier = EnemyDamageMultiplier
+      modeSettings.EnemyDamageMultiplier = EnemyDamageMultiplier
     end
 
     if BuildingHealthMultiplier ~= nil then
-      CDO.BuildingHealthMultiplier = BuildingHealthMultiplier
+      modeSettings.BuildingHealthMultiplier = BuildingHealthMultiplier
     end
 
     if HeatMultiplier ~= nil then
-      CDO.HeatMultiplier = HeatMultiplier
+      modeSettings.HeatMultiplier = HeatMultiplier
     end
 
     if ItemSpoilageMultiplier ~= nil then
-      CDO.ItemSpoilageMultiplier = ItemSpoilageMultiplier
+      modeSettings.ItemSpoilageMultiplier = ItemSpoilageMultiplier
     end
 
     if ItemDurabilityMultiplier ~= nil then
-      CDO.ItemDurabilityMultiplier = ItemDurabilityMultiplier
+      modeSettings.ItemDurabilityMultiplier = ItemDurabilityMultiplier
     end
 
     if ItemDurabilityPenaltyOnDeathPercentage ~= nil then
-      CDO.ItemDurabilityPenaltyOnDeathPercentage = ItemDurabilityPenaltyOnDeathPercentage
+      modeSettings.ItemDurabilityPenaltyOnDeathPercentage = ItemDurabilityPenaltyOnDeathPercentage
     end
 
     if SizzleMultiplier ~= nil then
-      CDO.SizzleMultiplier = SizzleMultiplier -- 0.1
+      modeSettings.SizzleMultiplier = SizzleMultiplier -- 0.1
     end
   end
 end
