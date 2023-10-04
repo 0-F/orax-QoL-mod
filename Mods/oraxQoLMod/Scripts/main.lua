@@ -134,6 +134,22 @@ end
 
 setmetatable(cache, cache.mt)
 
+function __FILE__()
+  return debug.getinfo(2, 'S').source
+end
+
+function __LINE__()
+  return debug.getinfo(2, 'l').currentline
+end
+
+function __NAME__()
+  return debug.getinfo(2, "n").name
+end
+
+function err(msg)
+  print(debug.traceback(msg, 2))
+end
+
 function printf(...)
   print(string.format(...))
 end
@@ -279,7 +295,7 @@ end
 
 local function UpdatePlayer(player)
   if not player:IsValid() then
-    print("Player instance not found\n")
+    err("Player instance not found.")
     return
   end
 
@@ -384,7 +400,7 @@ end
 
 local function UpdateGlobalItemData(globalItemData)
   if not globalItemData:IsValid() then
-    print("GlobalItemData instance not found\n")
+    err("GlobalItemData instance not found.")
     return
   end
 
@@ -430,7 +446,7 @@ local function UpdateGlobalItemData(globalItemData)
     if property:IsValid() then
       property:ImportText(stackSizeValue, property:ContainerPtrToValuePtr(globalItemData), 0, globalItemData)
     else
-      print("Can't find 'StackSizes' property.\n")
+      err("Can't find 'StackSizes' property.")
     end
   end
 
@@ -448,7 +464,7 @@ end
 
 local function UpdateGameState(gameState)
   if not gameState:IsValid() then
-    print("GameState instance not found\n")
+    err("GameState instance not found.")
     return
   end
 
@@ -460,7 +476,7 @@ end
 
 local function UpdateModeSettings(gameModeManager)
   if not gameModeManager:IsValid() then
-    print("GameModeManager instance not found\n")
+    err("GameModeManager instance not found.")
     return
   end
 
@@ -560,7 +576,7 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
 
   local function LookForPickupNearby()
     if not LocalPlayerCharacter or not LocalPlayerCharacter:IsValid() then
-      print("LocalPlayerCharacter is invalid.\n")
+      err("LocalPlayerCharacter is invalid.")
       return
     end
 
@@ -693,12 +709,12 @@ end
 
 local function OnMainMenu()
   ExecuteWithDelay(2000, function()
-    print(ModName .. " OnMainMenu()\n")
+    print(ModName, __NAME__, "\n")
 
     local survivalGameplayStatics = cache.survivalGameplayStatics
     local engine = cache.engine
     if not engine or not survivalGameplayStatics then
-      print("Engine or SurvivalGameplayStatics instance not found\n")
+      err("Engine or SurvivalGameplayStatics instance not found.")
       return
     end
 
@@ -708,13 +724,15 @@ local function OnMainMenu()
 end
 
 local function Init()
+  print(ModName, __NAME__, "\n")
+
   LocalPlayerCharacter = nil
 
   ExecuteWithDelay(2000, function()
     local survivalGameplayStatics = cache.survivalGameplayStatics
     local engine = cache.engine
     if not engine or not survivalGameplayStatics then
-      print("Engine or SurvivalGameplayStatics instance not found\n")
+      err("Engine or SurvivalGameplayStatics instance not found.")
       return
     end
 
@@ -732,7 +750,7 @@ local function Init()
 
     IsFirstInit = false
 
-    print(ModName .. " init done\n")
+    print(ModName, __NAME__, "done\n")
   end)
 end
 
