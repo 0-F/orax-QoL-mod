@@ -709,7 +709,7 @@ end
 
 local function OnMainMenu()
   ExecuteWithDelay(2000, function()
-    print(ModName, __NAME__, "\n")
+    print(ModName .. " OnMainMenu()\n")
 
     local survivalGameplayStatics = cache.survivalGameplayStatics
     local engine = cache.engine
@@ -724,18 +724,21 @@ local function OnMainMenu()
 end
 
 local function Init()
-  print(ModName, __NAME__, "\n")
+  print(ModName .. " Init()\n")
 
-  LocalPlayerCharacter = nil
+  local survivalGameplayStatics = cache.survivalGameplayStatics
+  local engine = cache.engine
+  if not engine or not survivalGameplayStatics then
+    err("Engine or SurvivalGameplayStatics instance not found.")
+    return
+  end
+
+  local player = survivalGameplayStatics:GetLocalSurvivalPlayerCharacter(engine.GameViewport)
+  if LocalPlayerCharacter ~= nil and (not player:IsValid() or LocalPlayerCharacter:GetAddress() == player:GetAddress()) then
+    return
+  end
 
   ExecuteWithDelay(2000, function()
-    local survivalGameplayStatics = cache.survivalGameplayStatics
-    local engine = cache.engine
-    if not engine or not survivalGameplayStatics then
-      err("Engine or SurvivalGameplayStatics instance not found.")
-      return
-    end
-
     local globalItemData = survivalGameplayStatics:GetGlobalItemData()
     local gameState = survivalGameplayStatics:GetSurvivalGameState(engine.GameViewport)
     local gameModeManager = survivalGameplayStatics:GetSurvivalGameModeManager(engine.GameViewport)
@@ -750,7 +753,7 @@ local function Init()
 
     IsFirstInit = false
 
-    print(ModName, __NAME__, "done\n")
+    print(ModName .. " Init() done.\n")
   end)
 end
 
