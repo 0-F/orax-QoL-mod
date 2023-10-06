@@ -6,8 +6,55 @@
 ModName = "oraxQoLMod"
 print(ModName .. " init\n")
 
+function isFileExists(filename)
+  local file = io.open(filename, "r")
+  if file ~= nil then
+    io.close(file)
+    return true
+  else
+    return false
+  end
+end
+
+function getCurrentDirectory()
+  return debug.getinfo(2, "S").source:match("@?(.+)\\")
+end
+
+function __FILE__()
+  return debug.getinfo(2, 'S').source
+end
+
+function __LINE__()
+  return debug.getinfo(2, 'l').currentline
+end
+
+function __NAME__()
+  return debug.getinfo(2, "n").name
+end
+
+function err(msg)
+  print(debug.traceback(msg, 2))
+end
+
+function printf(...)
+  print(string.format(...))
+end
+
 if OptionsFile == nil then
   OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
+  if not isFileExists(OptionsFile) then
+    local currDir = getCurrentDirectory()
+    printf(ModName .. " Current directory: %s\n", currDir)
+
+    if currDir then
+      OptionsFile = string.format(currDir .. "\\..\\options.txt", ModName)
+      if not isFileExists(OptionsFile) then
+        err("Unable to find the options.txt file in the parent directory.")
+      end
+    else
+      err("Unable to find the options.txt file. Unable to determine current directory.")
+    end
+  end
 end
 
 IsFirstInit = true
@@ -133,26 +180,6 @@ cache.mt.__index = function(obj, key)
 end
 
 setmetatable(cache, cache.mt)
-
-function __FILE__()
-  return debug.getinfo(2, 'S').source
-end
-
-function __LINE__()
-  return debug.getinfo(2, 'l').currentline
-end
-
-function __NAME__()
-  return debug.getinfo(2, "n").name
-end
-
-function err(msg)
-  print(debug.traceback(msg, 2))
-end
-
-function printf(...)
-  print(string.format(...))
-end
 
 function ShowMessage(message, icon)
   local engine = cache.engine
