@@ -3,6 +3,9 @@
     The original QoL mod for Grounded was created by TheLich:
     https://www.nexusmods.com/grounded/mods/82 (Configurable QoL mod)
 ]] --
+-- you can manually set the path of an options.txt file here
+OptionsFile = nil
+
 ModName = "oraxQoLMod"
 print(ModName .. " init\n")
 
