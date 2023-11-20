@@ -226,7 +226,7 @@ local function ToggleInteractTimerMod()
     LocalPlayerCharacter.DropInteractTimerMax = Alt.DropInteractTimerMax
     LocalPlayerCharacter.CancelInteractTimerMax = Alt.CancelInteractTimerMax
   else
-    SetupInteractTimerMod()
+    SetupInteractTimerMod(LocalPlayerCharacter)
   end
 
   ShowMessage("InteractTimerMax = " .. LocalPlayerCharacter.InteractTimerMax)
