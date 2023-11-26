@@ -4,8 +4,7 @@
     https://www.nexusmods.com/grounded/mods/82 (Configurable QoL mod)
 ]] --
 -- you can manually set the path of an options.txt file here
-OptionsFile = nil
-
+-- OptionsFile = 
 ModName = "oraxQoLMod"
 print(ModName .. " init\n")
 
