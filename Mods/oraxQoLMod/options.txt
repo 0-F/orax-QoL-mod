@@ -234,7 +234,8 @@ MaxActiveMutations = 15          -- default: 2
 
 -- Game Mode Settings | There are other settings in "Menu > Game Settings" in the game.
 --
---HungerAndThirstMultiplier = 1              -- default: 1.0
+--HungerMultiplier = 1                       -- default: 1.0
+--ThirstMultiplier = 1                       -- default: 1.0
 --PlayerDamageMultiplier = 1                 -- default: 1.0
 --EnemyDamageMultiplier = 1                  -- default: 1.0
 --BuildingHealthMultiplier = 1               -- default: 1.0

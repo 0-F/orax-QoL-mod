@@ -511,8 +511,12 @@ local function UpdateModeSettings(gameModeManager)
 
   local modeSettings = gameModeManager:GetGameModeSettings()
   if modeSettings:IsValid() then
-    if HungerAndThirstMultiplier ~= nil then
-      modeSettings.HungerAndThirstMultiplier = HungerAndThirstMultiplier
+    if HungerMultiplier ~= nil then
+      modeSettings.HungerMultiplier = HungerMultiplier
+    end
+
+    if ThirstMultiplier ~= nil then
+      modeSettings.ThirstMultiplier = ThirstMultiplier
     end
 
     if PlayerDamageMultiplier ~= nil then
