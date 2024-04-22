@@ -583,7 +583,6 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
   local plankClass = nil
   local logClass = nil
   local picking = false
-  local items = {}
   local pickupModes = {"All", "Items only", "Logs&PLanks only"}
 
   local function PickupMode()
@@ -627,40 +626,28 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
     local types = {1}
     local pos = LocalPlayerCharacter:K2_GetActorLocation()
     local results = {}
-    items = {}
     if kismet:SphereOverlapActors(engine.GameViewport, pos, AOEPickupRadius, types, pickupClass, nil, results) then
       for _, value in ipairs(results) do
         local item = value:get()
         if item and item:IsValid() and ValidForPickup(item) then
-          table.insert(items, item)
+          if item.Interact:IsValid() then
+            -- From Grounded 1.4, we need to execute "item:Interact"
+            -- inside the function ExecuteInGameThread(), otherwise the game crashes.
+            item:Interact(0, LocalPlayerCharacter)
+          else
+            if LocalPlayerCharacter:TryPickupItem(item.Item, false) then
+              item:DelayedDestroy()
+            end
+          end
         end
       end
     end
     picking = false
   end
 
-  local function PickupLoop()
-    if not LocalPlayerCharacter or not LocalPlayerCharacter:IsValid() then
-      return
-    end
-
-    if #items > 0 and not picking then
-      local item = table.remove(items)
-      if item and item:IsValid() then
-        if item.Interact:IsValid() then
-          item:Interact(0, LocalPlayerCharacter)
-        else
-          if LocalPlayerCharacter:TryPickupItem(item.Item, false) then
-            item:DelayedDestroy()
-          end
-        end
-      end
-    end
-  end
-
   local function PickupEvent()
-    if #items == 0 and not picking then
-      LookForPickupNearby()
+    if not picking then
+      ExecuteInGameThread(LookForPickupNearby)
     end
   end
 
@@ -677,8 +664,6 @@ if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
       RegisterKeyBind(AOEPickupModeKey, PickupMode)
     end
   end
-
-  RegisterHook("/Script/Maine.SurvivalGameState:GetActiveBossForPlayer", PickupLoop)
 end
 
 local function OnFirstInit()
