@@ -1238,3 +1238,13 @@ if IsDropModEnabled then
     end
   end
 end
+
+-- The 'ModRef' variable is a global variable that's automatically created
+-- and is the instance of the current mod.
+if ModRef:GetSharedVariable(ModName .. "_IsScriptLoaded") == true then
+  -- launch init() manually when the user restarts the mod
+  print(ModName .. " restarted.")
+  Init()
+else
+  ModRef:SetSharedVariable(ModName .. "_IsScriptLoaded", true)
+end
