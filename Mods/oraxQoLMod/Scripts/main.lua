@@ -3,59 +3,24 @@
     The original QoL mod for Grounded was created by TheLich:
     https://www.nexusmods.com/grounded/mods/82 (Configurable QoL mod)
 ]] --
--- you can manually set the path of an options.txt file here
--- OptionsFile = 
 ModName = "oraxQoLMod"
 print(ModName .. " init\n")
 
-function isFileExists(filename)
-  local file = io.open(filename, "r")
-  if file ~= nil then
-    io.close(file)
-    return true
-  else
-    return false
-  end
-end
+require("Mods.oraxQoLMod.Scripts.constants")
+require("Mods.oraxQoLMod.Scripts.utils")
 
-function getCurrentDirectory()
-  return debug.getinfo(2, "S").source:match("@?(.+)\\")
-end
+OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
+if not isFileExists(OptionsFile) then
+  local currDir = getCurrentDirectory()
+  printf(ModName .. " Current directory: %s\n", currDir)
 
-function __FILE__()
-  return debug.getinfo(2, 'S').source
-end
-
-function __LINE__()
-  return debug.getinfo(2, 'l').currentline
-end
-
-function __NAME__()
-  return debug.getinfo(2, "n").name
-end
-
-function err(msg)
-  print(debug.traceback(msg, 2))
-end
-
-function printf(...)
-  print(string.format(...))
-end
-
-if OptionsFile == nil then
-  OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
-  if not isFileExists(OptionsFile) then
-    local currDir = getCurrentDirectory()
-    printf(ModName .. " Current directory: %s\n", currDir)
-
-    if currDir then
-      OptionsFile = string.format(currDir .. "\\..\\options.txt", ModName)
-      if not isFileExists(OptionsFile) then
-        err("Unable to find the options.txt file in the parent directory.")
-      end
-    else
-      err("Unable to find the options.txt file. Unable to determine current directory.")
+  if currDir then
+    OptionsFile = string.format(currDir .. "\\..\\options.txt", ModName)
+    if not isFileExists(OptionsFile) then
+      err("Unable to find the options.txt file in the parent directory.")
     end
+  else
+    err("Unable to find the options.txt file. Unable to determine current directory.")
   end
 end
 
@@ -76,66 +41,10 @@ IsDropModEnabled = false
 PreIdBuildAnywhere = 0
 PostIdBuildAnywhere = 0
 
--- Enum /Script/Maine.EPlayerStatType
-local EPlayerStatType = {
-  None = 0,
-  Kill = 1,
-  CraftItem = 2,
-  PickupItem = 3,
-  Revive = 4,
-  Discover = 5,
-  Stamina = 6,
-  BasketballShot = 7,
-  TamePet = 8,
-  ProcessItem = 9,
-  ZiplineDistance = 10,
-  UseItem = 11,
-  Block = 12,
-  Scripted = 13,
-  TakePhoto = 14,
-  RangedAttack = 15,
-  DefensePoint = 16,
-  Death = 17,
-  Coziness = 18,
-  EPlayerStatType_MAX = 19
-}
-
--- Enum /Script/Maine.EBuildingState
-EBuildingState = {
-  None = 0,
-  Built = 1,
-  BeingPlaced = 2,
-  BeingPlacedInvalid = 3,
-  UnderConstruction = 4,
-  Cancelled = 5,
-  Destroyed = 6,
-  CollapseDestroy = 7,
-  EBuildingState_MAX = 8
-}
-
--- Enum /Script/Maine.EBuildingGridSurfaceType
-EBuildingGridSurfaceType = {
-  None = 0,
-  Invalid = 1,
-  Water = 4,
-  Default = 7,
-  EBuildingGridSurfaceType_MAX = 8
-}
-
 DisableFOG = false
 DisableDOF = false
 
 AOEPickupMode = 1
-
-StackSize = {
-  Default = 10,
-  Ammo = 20,
-  Single = 1,
-  Food = 5,
-  Resource = 10,
-  LargeResource = 5,
-  UpgradeStones = 99
-}
 
 DropAmountMultiplier = {}
 DropChanceMin = {}
@@ -741,6 +650,17 @@ local function OnMainMenu()
   end)
 end
 
+local function OnNewSurvivalPlayerCharacter(player)
+  playerEffects[player:GetFullName()] = player.StatusEffectComponent:GetValueForStat(EPlayerStatType.ProcessItem)
+
+  ExecuteWithDelay(2000, function()
+    if player.InputComponent:IsValid() then
+      LocalPlayerCharacter = player
+    end
+    UpdatePlayer(player)
+  end)
+end
+
 local function Init()
   print(ModName .. " Init()\n")
 
@@ -776,14 +696,7 @@ local function Init()
 end
 
 NotifyOnNewObject("/Script/Maine.SurvivalPlayerCharacter", function(player)
-  playerEffects[player:GetFullName()] = player.StatusEffectComponent:GetValueForStat(EPlayerStatType.ProcessItem)
-
-  ExecuteWithDelay(2000, function()
-    if player.InputComponent:IsValid() then
-      LocalPlayerCharacter = player
-    end
-    UpdatePlayer(player)
-  end)
+  OnNewSurvivalPlayerCharacter(player)
 end)
 
 -- Handy Gnat
@@ -1241,10 +1154,35 @@ end
 
 -- The 'ModRef' variable is a global variable that's automatically created
 -- and is the instance of the current mod.
+-- Is 'true' when the user restarts the mod.
 if ModRef:GetSharedVariable(ModName .. "_IsScriptLoaded") == true then
-  -- launch init() manually when the user restarts the mod
-  print(ModName .. " restarted.")
+  --
+  -- Run some init functions manually when the user restarts the mod.
+  -- Some functions triggered by 'NotifyOnNewObject' or 'RegisterHook'
+  -- will not be executed when restarting the mod. So we have to execute them.
+  --
+
+  -- normally triggered on a new MainMenuWidget instance
+  OnMainMenu()
+
+  -- normally triggered on a ClientRestart event
   Init()
+
+  -- apply modifications on player characters
+  local SurvivalPlayerCharacterInstances = FindAllOf("SurvivalPlayerCharacter")
+  if SurvivalPlayerCharacterInstances == nil then
+    print("No instances of 'SurvivalPlayerCharacter' were found\n")
+    return
+  end
+  for Index, Instance in ipairs(SurvivalPlayerCharacterInstances) do
+    if not Instance:IsA(StaticFindObject("/Script/Maine.SurvivalPlayerCharacter")) then
+      print(Instance:GetFName():ToString() ..
+              " is not an instance of the class '/Script/Maine.SurvivalPlayerCharacter'.")
+      return
+    end
+    -- normally triggered on a new SurvivalPlayerCharacter instance
+    OnNewSurvivalPlayerCharacter(Instance)
+  end
 else
   ModRef:SetSharedVariable(ModName .. "_IsScriptLoaded", true)
 end
