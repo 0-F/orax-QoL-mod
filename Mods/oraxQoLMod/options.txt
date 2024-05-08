@@ -45,6 +45,9 @@ InfiniteItemPower = true
 StorageRadius = 20000 -- default: 2000.0 | chest storage
 TypeRestrictedStorageRadius = 20000 -- default: 4000.0 | pallet storage
 
+-- Always allowed to open the SCA.B menu. For example, Handy Gnat can open the map.
+IsOpenQuickMenuAllowed = false
+
 -- Handy Gnat
 HandyGnatMaxFlySpeed = 4800 -- default: 1200.0
 HandyGnatMaxAcceleration = 8192 -- default: 2048.0

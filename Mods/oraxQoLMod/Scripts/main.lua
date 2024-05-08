@@ -1109,6 +1109,13 @@ if HandyGnatInteractionEnable == true then
     end)
 end
 
+-- Always allowed to open the SCA.B menu
+if IsOpenQuickMenuAllowed == true then
+  RegisterHook("/Script/Maine.WidgetManager:IsOpenQuickMenuAllowed", function(self)
+    return true
+  end)
+end
+
 NotifyOnNewObject("/Script/Maine.MainMenuWidget", function(object)
   OnMainMenu()
 end)
