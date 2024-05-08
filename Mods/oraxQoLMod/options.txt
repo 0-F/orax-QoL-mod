@@ -53,6 +53,40 @@ HandyGnatBrakingFrictionFactor = 40 -- default: 2.0
 --HandyGnatBrakingSubStepTime = 0.03 -- default: 0.030303031206131
 --HandyGnatBrakingDecelerationFlying = 1000 -- default: 1000.0
 
+HandyGnatInteractionEnable = false -- Don't forget to set to "true" if you want to use this feature. (valid values: true or false)
+HandyGnatInteractionFilter = {
+  1,  -- Pickup | Handy Gnat will be able to use Workbench and set custom marker (name, color, etc.).
+  -- 2,  -- Eat
+  -- 3,  -- Drink
+  -- 4,  -- Cook
+  -- 5,  -- Rest
+  -- 6,  -- PlaceBuilding
+  -- 7,  -- AddIngredient
+  -- 8,  -- LightFire
+  -- 9,  -- InventoryFull
+  -- 10, -- Drying
+  -- 11, -- InvalidPlayer
+  -- 12, -- Equip
+  -- 13, -- Cancel
+  -- 14, -- UnableToLightFire
+  15, -- Storage | Handy Gnat will be able to use chests.
+  -- 16, -- Conversation
+  -- 17, -- Revive
+  -- 18, -- MissingIngredients
+  -- 19, -- Busy
+  20, -- StartZiplineConnection
+  21, -- ZiplineZip
+  -- 22, -- Mount
+  -- 23, -- CannotHaul
+  -- 24, -- Climb
+  -- 25, -- Pet
+  -- 26, -- PetHome
+  -- 27, -- ConfigureSign
+  -- 28, -- SpinningWheel
+  -- 29, -- Turret
+}
+--end-- Handy Gnat
+
 -- Bird (Crow)
 --BirdLandedTimeLowerBound = 120        -- default: 120.0   | Landed time (min)
 --BirdLandedTimeUpperBound = 300        -- default: 300.0   | Landed time (max)

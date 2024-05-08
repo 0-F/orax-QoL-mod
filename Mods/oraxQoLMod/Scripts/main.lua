@@ -1092,6 +1092,23 @@ if DayLengthMultiplier ~= nil or NightLengthMultiplier ~= nil then
   end)
 end
 
+if HandyGnatInteractionEnable == true then
+  RegisterHook("/Script/Maine.InteractableInterface:IsInteractionEnabledForBuilder",
+    function(self, channel, instigatedBy, interactionType)
+      if channel:get() ~= EInteractionChannel.Primary then
+        return
+      end
+
+      local type = interactionType:get()
+
+      for i, v in ipairs(HandyGnatInteractionFilter) do
+        if type == v then
+          return EInteractionState.Enabled
+        end
+      end
+    end)
+end
+
 NotifyOnNewObject("/Script/Maine.MainMenuWidget", function(object)
   OnMainMenu()
 end)
