@@ -1,3 +1,12 @@
+---@enum ECustomPropertyValueFormat
+ECustomPropertyValueFormat = {
+  PlainNumber = 0,
+  Percent = 1,
+  Degrees = 2,
+  Seconds = 3,
+  ECustomPropertyValueFormat_MAX = 4
+}
+
 --- @enum EInteractionChannel
 EInteractionChannel = {
   Primary = 0,

@@ -154,6 +154,29 @@ StackSize.UpgradeStones = 9999 -- default: 99
 --CozinessLevel4 = 200 -- default: 2000
 --CozinessLevel5 = 300 -- default: 3000
 
+-- Bounce Web (trampoline)
+BounceWebMod.enable = false -- enable or disable the BounceWeb mod | valid values: true, false
+BounceWebMod.BounceIntensity = {
+  DefaultValue = 1.0, -- 1.0
+  SliderMinValue = 0.5, -- 0.5
+  SliderMaxValue = 1.0, -- 1.0
+  SliderStepSize = 0.05, -- 0.05
+  ValueFormat = 1, -- 1 | valid values: 0 (PlainNumber), 1 (Percent)
+  MaxIntegralDigits = 3, -- 3
+  MinFractionalDigits = 1, -- 1
+  MaxFractionalDigits = 1 -- 1
+}
+BounceWebMod.Angle = {
+  DefaultValue = 0.0, -- 0.0
+  SliderMinValue = -45.0, -- -45.0
+  SliderMaxValue = 45.0, -- 45.0
+  SliderStepSize = 10.0, -- 10.0
+  MaxIntegralDigits = 3, -- 3
+  MinFractionalDigits = 1, -- 1
+  MaxFractionalDigits = 1 -- 1
+}
+--end-- Bounce Web
+
 -- DropMod (loots from creatures/resources) [BEGIN]
 --
 --[[

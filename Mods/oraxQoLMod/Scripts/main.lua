@@ -32,6 +32,11 @@ Debug = {}
 -- These values can be set in "options.txt".
 Alt = {}
 
+-- Bounce Web (trampoline)
+BounceWebMod = {}
+BounceWebMod.BounceIntensity = {}
+BounceWebMod.Angle = {}
+
 IsInteractTimerModEnabled = false
 IsZiplineModEnabled = false
 IsBuildAnywhereEnabled = false
@@ -578,6 +583,29 @@ end
 local function OnFirstInit()
   local survivalGameplayStatics = cache.survivalGameplayStatics
   local partyComponent = survivalGameplayStatics:GetPartyComponent(cache.engine.GameViewport)
+
+  -- Bounce Web (trampoline)
+  if BounceWebMod.enable == true then
+    local trampolineCustomProperties = StaticFindObject(
+      "/Game/Design/CustomizablePropertyData/TrampolineCustomProperties.TrampolineCustomProperties")
+
+    ---@type TArray
+    local customProperties = trampolineCustomProperties.CustomProperties
+
+    customProperties:ForEach(function(index, elem)
+      ---@type UScriptStruct
+      local prop = elem:get()
+
+      ---@type string
+      local propID = prop["PropertyID"]:ToString()
+
+      if BounceWebMod[propID] ~= nil then
+        for k, v in pairs(BounceWebMod[propID]) do
+          prop[k] = v
+        end
+      end
+    end)
+  end
 
   -- Raw Science
   --
