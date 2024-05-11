@@ -9,18 +9,22 @@ print(ModName .. " init\n")
 require("Mods.oraxQoLMod.Scripts.constants")
 require("Mods.oraxQoLMod.Scripts.utils")
 
-OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
-if not isFileExists(OptionsFile) then
-  local currDir = getCurrentDirectory()
-  printf(ModName .. " Current directory: %s\n", currDir)
+-- Test if OptionsFile == nil, because we could define OptionsFile in another script (ex: tests scripts).
+if OptionsFile == nil then
+  OptionsFile = string.format("Mods\\%s\\options.txt", ModName)
 
-  if currDir then
-    OptionsFile = string.format(currDir .. "\\..\\options.txt", ModName)
-    if not isFileExists(OptionsFile) then
-      err("Unable to find the options.txt file in the parent directory.")
+  if not isFileExists(OptionsFile) then
+    local currDir = getCurrentDirectory()
+    printf(ModName .. " Current directory: %s\n", currDir)
+
+    if currDir then
+      OptionsFile = string.format(currDir .. "\\..\\options.txt", ModName)
+      if not isFileExists(OptionsFile) then
+        err("Unable to find the options.txt file in the parent directory.")
+      end
+    else
+      err("Unable to find the options.txt file. Unable to determine current directory.")
     end
-  else
-    err("Unable to find the options.txt file. Unable to determine current directory.")
   end
 end
 
