@@ -77,8 +77,9 @@ cache.names = {
   ["kismet"] = {"/Script/Engine.Default__KismetSystemLibrary", true},
   ["icon_Build"] = {"/Game/UI/Images/T_UI_Build.T_UI_Build", true},
   ["icon_Sleep"] = {"/Game/UI/Images/FlagIcons/T_UI_Flag_Sleep.T_UI_Flag_Sleep", true},
-  ["icon_Zipline"] = {"/Game/Blueprints/Items/Icons/ICO_BLDG_Zipline_Anchor.ICO_BLDG_Zipline_Anchor", true},
-  ["icon_CancelBuild"] = {"/Game/UI/Images/ActionIcons/T_UI_CancelBuild.T_UI_CancelBuild", true}
+  ["icon_Zipline"] = {"/Game/Blueprints/Items/Icons/Buildings/ICO_BLDG_Zipline_Anchor.ICO_BLDG_Zipline_Anchor", true},
+  ["icon_CancelBuild"] = {"/Game/UI/Images/ActionIcons/T_UI_CancelBuild.T_UI_CancelBuild", true},
+  ["icon_Science_RS"] = {"/Game/UI/Images/T_UI_Science_MainChunk.T_UI_Science_MainChunk", true}
 }
 
 cache.mt = {}
@@ -110,7 +111,7 @@ function ShowMessage(message, icon)
   end
 
   -- load texture if needed
-  if cache[icon] == nil then
+  if cache[icon] == nil or not cache[icon]:IsValid() then
     ExecuteInGameThread(function()
       local assetPath = cache.names[icon][1]
       print("Load asset: " .. assetPath .. "\n")
@@ -650,33 +651,31 @@ local function OnFirstInit()
 
     RegisterHook("/Script/Maine.PartyComponent:ServerAddScienceFound", function(self, ScienceAmount)
       local partyComponent = self:get()
-      local added = ScienceAmount:get()
+      local scienceAmountAdded = ScienceAmount:get()
 
       -- bugged cases
-      if partyComponent.ScienceFound < 0 or added < 0 then
+      if partyComponent.ScienceFound < 0 or scienceAmountAdded < 0 then
         partyComponent.ScienceFound = ScienceAmountMax
         ScienceAmount:set(0)
         return
       end
 
       if ScienceAmountMultiplier ~= nil then
-        local addedNew = math.min(partyComponent.ScienceFound + added * ScienceAmountMultiplier, ScienceAmountMax) -
-                           partyComponent.ScienceFound
-        ScienceAmount:set(addedNew)
+        local scienceAmountAddedNew = math.min(partyComponent.ScienceFound + scienceAmountAdded *
+                                                 ScienceAmountMultiplier, ScienceAmountMax) -
+                                        partyComponent.ScienceFound
+        ScienceAmount:set(scienceAmountAddedNew)
+
+        local diff = scienceAmountAddedNew - scienceAmountAdded
+        if MessageToShow ~= nil then
+          local msg = MessageToShow
+          msg = string.gsub(msg, "$diff", diff)
+          msg = string.gsub(msg, "$scienceAmountAddedNew", scienceAmountAddedNew)
+          msg = string.gsub(msg, "$scienceAmountAdded", scienceAmountAdded)
+          ShowMessage(msg, "icon_Science_RS")
+        end
       end
     end)
-
-    RegisterHook(
-      "/Game/UI/HUD/Notifications/UI_ScienceFoundNotification.UI_ScienceFoundNotification_C:OnScienceChanged",
-      function(self, scienceAdded, totalScience)
-        -- /Script/Maine.PartyComponent:OnScienceFoundChangedDelegate => (UI_ScienceFoundNotification.OnScienceChanged)
-        local added = scienceAdded:get()
-        local total = totalScience:get()
-
-        if total < added or total < 0 or total > ScienceAmountMax then
-          partyComponent.ScienceFound = ScienceAmountMax
-        end
-      end)
   end
 end
 
