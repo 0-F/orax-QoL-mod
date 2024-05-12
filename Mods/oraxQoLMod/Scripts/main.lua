@@ -104,12 +104,26 @@ setmetatable(cache, cache.mt)
 function ShowMessage(message, icon)
   local engine = cache.engine
   local uiStatics = cache.uiStatics
+
   if icon == nil then
-    icon = cache.icon_Build -- default icon
+    icon = "icon_Build" -- default icon
   end
-  if uiStatics and icon then
+
+  -- load texture if needed
+  if cache[icon] == nil then
+    ExecuteInGameThread(function()
+      local assetPath = cache.names[icon][1]
+      print("Load asset: " .. assetPath .. "\n")
+      LoadAsset(assetPath)
+      cache[icon] = StaticFindObject(assetPath)
+    end)
+  end
+
+  local iconTexture = cache[icon]
+
+  if uiStatics and iconTexture then
     local ui = uiStatics:GetGameUI(engine.GameViewport)
-    ui:PostGenericMessage(message, icon)
+    ui:PostGenericMessage(message, iconTexture)
   end
 end
 
@@ -178,22 +192,22 @@ local function ToggleZiplineMod()
 
   if IsZiplineModEnabled then
     -- restore default game values if alternative values is not set in options.txt
-    ShowMessage("ZiplineMod: restore default or alternative values", cache.icon_Zipline)
+    ShowMessage("ZiplineMod: restore default or alternative values", "icon_Zipline")
     moveComp.ZiplineIgnoreCollisionDistance = Alt.ZiplineIgnoreCollisionDistance
     moveComp.ZiplineMaxSpeedMultiplier = Alt.ZiplineMaxSpeedMultiplier
     moveComp.ZiplineExitVelocityMultiplier = Alt.ZiplineExitVelocityMultiplier
     moveComp.ZiplineAscendAccel = Alt.ZiplineAscendAccel
     moveComp.ZiplineMaxAscendSpeed = Alt.ZiplineMaxAscendSpeed
   else
-    ShowMessage("ZiplineMod: enable", cache.icon_Zipline)
+    ShowMessage("ZiplineMod: enable", "icon_Zipline")
     SetupZiplineMod(LocalPlayerCharacter)
   end
 
-  ShowMessage("IgnoreCollisionDistance = " .. moveComp.ZiplineIgnoreCollisionDistance, cache.icon_Zipline)
-  ShowMessage("MaxSpeedMultiplier = " .. moveComp.ZiplineMaxSpeedMultiplier, cache.icon_Zipline)
-  ShowMessage("ExitVelocityMultiplier = " .. moveComp.ZiplineExitVelocityMultiplier, cache.icon_Zipline)
-  ShowMessage("AscendAccel = " .. moveComp.ZiplineAscendAccel, cache.icon_Zipline)
-  ShowMessage("MaxAscendSpeed =" .. moveComp.ZiplineMaxAscendSpeed, cache.icon_Zipline)
+  ShowMessage("IgnoreCollisionDistance = " .. moveComp.ZiplineIgnoreCollisionDistance, "icon_Zipline")
+  ShowMessage("MaxSpeedMultiplier = " .. moveComp.ZiplineMaxSpeedMultiplier, "icon_Zipline")
+  ShowMessage("ExitVelocityMultiplier = " .. moveComp.ZiplineExitVelocityMultiplier, "icon_Zipline")
+  ShowMessage("AscendAccel = " .. moveComp.ZiplineAscendAccel, "icon_Zipline")
+  ShowMessage("MaxAscendSpeed =" .. moveComp.ZiplineMaxAscendSpeed, "icon_Zipline")
 
   IsZiplineModEnabled = not IsZiplineModEnabled
 end
@@ -205,7 +219,7 @@ local function CancelNearbyBlueprints()
   local survivalGameplayStatics = cache.survivalGameplayStatics
 
   if not CancelNearbyBlueprintsRange then
-    ShowMessage("You need to set a range", cache.icon_CancelBuild)
+    ShowMessage("You need to set a range", "icon_CancelBuild")
     return
   end
 
@@ -213,7 +227,7 @@ local function CancelNearbyBlueprints()
     survivalGameplayStatics:GetCancelNearbyBlueprintsCount(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
   print(tostring(count))
   if count == 0 then
-    ShowMessage("No nearby blueprints were found", cache.icon_CancelBuild)
+    ShowMessage("No nearby blueprints were found", "icon_CancelBuild")
     return
   end
 
@@ -221,7 +235,7 @@ local function CancelNearbyBlueprints()
   if count > 1 then
     text = text .. "s" -- plural
   end
-  ShowMessage(string.format(text, count), cache.icon_CancelBuild)
+  ShowMessage(string.format(text, count), "icon_CancelBuild")
   survivalGameplayStatics:CancelNearbyBlueprints(LocalPlayerCharacter, CancelNearbyBlueprintsRange)
 end
 
@@ -856,10 +870,10 @@ local function ToggleGamePaused()
 
   if gameplayStatics:IsGamePaused(LocalPlayerCharacter) then
     pause = false
-    ShowMessage("Game unpaused", cache.icon_Sleep)
+    ShowMessage("Game unpaused", "icon_Sleep")
   else
     pause = true
-    ShowMessage("Game paused", cache.icon_Sleep)
+    ShowMessage("Game paused", "icon_Sleep")
   end
 
   gameplayStatics:SetGamePaused(LocalPlayerCharacter, pause)
