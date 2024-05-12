@@ -88,7 +88,7 @@ HandyGnatInteractionFilter = {
   -- 28, -- SpinningWheel
   -- 29, -- Turret
 }
---end-- Handy Gnat
+-- end -- Handy Gnat
 
 -- Bird (Crow)
 --BirdLandedTimeLowerBound = 120        -- default: 120.0   | Landed time (min)
@@ -150,7 +150,7 @@ StackSize.UpgradeStones = 9999 -- default: 99
 -- $diff, $scienceAmountAdded, $scienceAmountAddedNew are special strings that will be replaced by corresponding variables.
 -- Comment the line below if you don't want to see a message.
 MessageToShow = [[Science added: $scienceAmountAddedNew=$scienceAmountAdded+$diff]]
---end-- Raw Science
+-- end -- Raw Science
 
 -- Coziness levels
 --CozinessLevel1 = 50  -- default: 500
@@ -180,7 +180,7 @@ BounceWebMod.Angle = {
   MinFractionalDigits = 1, -- 1
   MaxFractionalDigits = 1 -- 1
 }
---end-- Bounce Web
+-- end -- Bounce Web
 
 -- DropMod (loots from creatures/resources) [BEGIN]
 --
