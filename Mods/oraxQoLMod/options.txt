@@ -159,6 +159,8 @@ MessageToShow = [[Science added: $scienceAmountAddedNew=$scienceAmountAdded+$dif
 --CozinessLevel4 = 200 -- default: 2000
 --CozinessLevel5 = 300 -- default: 3000
 
+CozinessRange = 4000 -- default: 2000
+
 -- Bounce Web (trampoline)
 BounceWebMod.enable = false -- enable or disable the BounceWeb mod | valid values: true, false
 BounceWebMod.BounceIntensity = {

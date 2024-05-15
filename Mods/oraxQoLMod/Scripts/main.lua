@@ -508,6 +508,11 @@ local function UpdateGlobalBuildingData(globalBuildingData)
       end
     end)
   end
+
+  -- Coziness range
+  if CozinessRange ~= nil then
+    globalBuildingData.CozinessCheckRadius = CozinessRange
+  end
 end
 
 if AOEPickupRadius ~= nil and AOEPickupKey ~= nil then
