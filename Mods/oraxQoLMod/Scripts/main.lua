@@ -41,6 +41,8 @@ BounceWebMod = {}
 BounceWebMod.BounceIntensity = {}
 BounceWebMod.Angle = {}
 
+StatusEffectDuration = {}
+
 IsInteractTimerModEnabled = false
 IsZiplineModEnabled = false
 IsBuildAnywhereEnabled = false
@@ -682,6 +684,50 @@ local function OnFirstInit()
       end
     end)
   end
+
+  -- Status effect
+  if StatusEffectDuration.Enable == true then
+    local function SetCustomTimeElapsed(statusEffect)
+      local duration = statusEffect.GetDuration()
+
+      -- test if duration is infinite
+      if duration == math.huge then
+        return
+      end
+
+      for nameKey, customDuration in pairs(StatusEffectDuration.FilteredByName) do
+        if nameKey == statusEffect.StatusEffectRowHandle.RowName:ToString() then
+          statusEffect.TimeElapsed = -(customDuration - duration)
+          return
+        end
+      end
+
+      for durationKey, customDuration in pairs(StatusEffectDuration.FilteredByOriginalDuration) do
+        if durationKey == duration then
+          statusEffect.TimeElapsed = -(customDuration - duration)
+          return
+        end
+      end
+    end
+
+    RegisterHook("/Game/UI/StatusEffects/UI_StatusEffectTimer.UI_StatusEffectTimer_C:Initialize",
+      function(self, statusEffectUParam, addedThisFrameUParam)
+        local statusEffect = statusEffectUParam:get()
+        local addedThisFrame = addedThisFrameUParam:get()
+
+        -- check if the effect has just been added
+        if addedThisFrame then
+          SetCustomTimeElapsed(statusEffect)
+        end
+      end)
+
+    RegisterHook("/Game/UI/StatusEffects/UI_StatusEffectTimer.UI_StatusEffectTimer_C:OnTimerReset",
+      function(self, statusEffectUParam)
+        local statusEffect = statusEffectUParam:get()
+
+        SetCustomTimeElapsed(statusEffect)
+      end)
+  end
 end
 
 local function OnMainMenu()
@@ -790,6 +836,7 @@ if BirdLandedTimeLowerBound ~= nil or BirdLandedTimeUpperBound ~= nil or BirdTim
   end)
 end
 
+-- [DEPRECATED: use StatusEffectDuration instead]
 -- https://grounded.fandom.com/wiki/Status_Effects#Trickle_Regen
 if SmallHoTEffect_TimeElapsed ~= nil then
   RegisterHook("/Script/Maine.StatusEffect:GetDataHandle", function(self)
@@ -800,6 +847,8 @@ if SmallHoTEffect_TimeElapsed ~= nil then
     end
   end)
 end
+
+-- [DEPRECATED: use StatusEffectDuration instead]
 if SmallHoTEffect_TimeElapsed__2 ~= nil then
   RegisterHook("/Script/Maine.HealthComponent:OnStatusEffectChanged", function(self, owner, statusEffect)
     local effect = statusEffect:get()

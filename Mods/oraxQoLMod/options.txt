@@ -34,8 +34,42 @@ ToggleZiplineModKey = Key.HOME -- https://docs.ue4ss.com/lua-api/table-definitio
 ToggleZiplineModModifierKeys = {ModifierKey.SHIFT} -- https://docs.ue4ss.com/lua-api/table-definitions/modifierkey.html
 
 -- Effect "+Trickle Regen" with "Fiber Bandage" - https://grounded.fandom.com/wiki/Status_Effects#Trickle_Regen
-SmallHoTEffect_TimeElapsed = -82800 -- default: 0 (in seconds), 82800 seconds = 23 hours
---SmallHoTEffect_TimeElapsed__2 = -82800 -- default: 0 | Alternative method if the first does not work. Use one or the other.
+--SmallHoTEffect_TimeElapsed = -82800 -- [DEPRECATED: use StatusEffectDuration instead] default: 0 (in seconds), 82800 seconds = 23 hours
+--SmallHoTEffect_TimeElapsed__2 = -82800 -- [DEPRECATED: use StatusEffectDuration instead] default: 0 | Alternative method if the first does not work. Use one or the other.
+
+-- Status effect duration
+StatusEffectDuration.Enable = false -- enable or disable the StatusEffectDuration mod | valid values: true, false
+
+--[[
+  Syntax:
+    <name> = <new_duration>
+
+    For information: the <name> corresponds to the RowName property in the Table_StatusEffects datatable.
+    
+  Example:
+    SmallHoT = 120 => means that the buff with the name "SmallHoT"
+    will now have a duration of 120 seconds.
+]]
+StatusEffectDuration.FilteredByName = {
+  -- SmallHoT is the effect "+Trickle Regen" when you use a "Fiber Bandage".
+  -- https://grounded.fandom.com/wiki/Status_Effects#Trickle_Regen
+  SmallHoT = 60 * 60 * 23 -- 60 * 60 * 23 = 82800 seconds = 23 hours
+}
+
+--[[
+  Syntax:
+    [<original_duration>] = <new_duration>
+  Example:
+    [50] = 120 => means that any buff that had a duration of 50 seconds
+    will now have a duration of 120 seconds.
+]]
+StatusEffectDuration.FilteredByOriginalDuration = {
+  [50] = 120, -- 120 seconds is 2 minutes
+  [120] = 600, -- 600 seconds is 10 minutes
+  [240] = 1200, -- 1200 seconds is 20 minutes 
+  [900] = 3600 -- 3600 seconds is 1 hour
+}
+-- end -- Status effect duration
 
 -- Infinite item power (for torch) - https://grounded.fandom.com/wiki/Category:Tools/Light
 InfiniteItemPower = true
