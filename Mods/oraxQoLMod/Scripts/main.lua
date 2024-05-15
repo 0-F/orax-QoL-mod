@@ -609,7 +609,7 @@ local function OnFirstInit()
   local partyComponent = survivalGameplayStatics:GetPartyComponent(cache.engine.GameViewport)
 
   -- Bounce Web (trampoline)
-  if BounceWebMod.enable == true then
+  if BounceWebMod.Enable == true then
     local trampolineCustomProperties = StaticFindObject(
       "/Game/Design/CustomizablePropertyData/TrampolineCustomProperties.TrampolineCustomProperties")
 
