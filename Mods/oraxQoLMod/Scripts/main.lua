@@ -1215,6 +1215,18 @@ if IsOpenQuickMenuAllowed == true then
   end)
 end
 
+-- Fixes StorageRadius and TypeRestrictedStorageRadius in multiplayer
+if StorageRadius ~= nil or TypeRestrictedStorageRadius ~= nil then
+  NotifyOnNewObject("/Script/Maine.SurvivalPlayerCharacter", function(createdObject)
+    if StorageRadius ~= nil then
+      createdObject.ProximityInventoryComponent.StorageRadius = StorageRadius
+    end
+    if TypeRestrictedStorageRadius ~= nil then
+      createdObject.ProximityInventoryComponent.TypeRestrictedStorageRadius = TypeRestrictedStorageRadius
+    end
+  end)
+end
+
 NotifyOnNewObject("/Script/Maine.MainMenuWidget", function(object)
   OnMainMenu()
 end)
